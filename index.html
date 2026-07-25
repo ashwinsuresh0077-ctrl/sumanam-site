@@ -111,50 +111,46 @@
         body.light-theme .toggle-btn[data-collection="white"] { background: #fff; color: #000; border-color: #000; }
         body.light-theme .toggle-btn[data-collection="black"] { background: transparent; color: #0a0a0a; border-color: var(--glass-border); }
 
-        /* ---- Rotating 3D showcase ---- */
+        /* ---- Rotating 3D showcase (background-keyed, frameless) ---- */
         .stage { display: flex; justify-content: center; align-items: center; perspective: 1400px; height: 100%; }
         .showcase {
             position: relative;
             width: min(60vw, 820px);
             aspect-ratio: 16 / 9;
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 50px 110px -40px rgba(0,0,0,0.9), inset 0 0 0 1px rgba(255,255,255,0.05);
-            background: #000;
+            background: transparent;
             cursor: grab;
             transform-style: preserve-3d;
             will-change: transform;
             touch-action: pan-y;
         }
         .showcase.dragging { cursor: grabbing; }
-        body.light-theme .showcase { box-shadow: 0 50px 110px -46px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.3); }
+        body.light-theme .showcase { filter: none; }
+        /* Source video is hidden; the keyed canvas is what shows */
         .showcase video {
             position: absolute; inset: 0; width: 100%; height: 100%;
             object-fit: cover; display: block; pointer-events: none;
-            transition: filter 1.1s ease;
+            opacity: 0; transition: filter 1.1s ease;
         }
         body.light-theme .showcase video { filter: brightness(1.05); }
-        .show-vignette {
-            position: absolute; inset: 0; pointer-events: none;
-            background:
-                radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(0,0,0,0.55) 100%),
-                linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.6) 100%);
+        .turntable-canvas {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            display: block; pointer-events: none;
+            filter: drop-shadow(0 30px 48px rgba(0,0,0,0.6));
         }
         .badge-360 {
-            position: absolute; top: 1rem; left: 1rem; z-index: 3;
+            position: absolute; top: 0.5rem; left: 0.5rem; z-index: 3;
             display: flex; align-items: center; gap: 0.5rem;
             font-size: 0.66rem; letter-spacing: 0.2em; font-weight: 700; text-transform: uppercase;
             padding: 0.45rem 0.8rem; border-radius: 100px;
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);
-            backdrop-filter: blur(10px); color: #fff;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px); color: var(--text);
         }
         .badge-360 svg { width: 14px; height: 14px; }
         .drag-hint {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 3;
             display: flex; align-items: center; gap: 0.6rem;
-            font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(255,255,255,0.85);
-            padding: 0.6rem 1.1rem; border-radius: 100px; background: rgba(0,0,0,0.35);
+            font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--text);
+            padding: 0.6rem 1.1rem; border-radius: 100px; background: rgba(0,0,0,0.3);
             backdrop-filter: blur(6px); pointer-events: none;
             transition: opacity 0.5s ease;
         }
@@ -162,11 +158,11 @@
         .showcase.touched .drag-hint { opacity: 0; }
         .show-cap {
             position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
-            padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: flex-end;
+            padding: 0 0.5rem; display: flex; justify-content: space-between; align-items: flex-end;
         }
-        .show-cap .cap-name { font-size: 0.74rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: #fff; }
-        .show-cap .cap-sub { font-size: 0.64rem; letter-spacing: 0.14em; color: rgba(255,255,255,0.6); margin-top: 0.2rem; }
-        .show-cap .cap-price { font-family: var(--font-display); font-size: 1.4rem; color: #fff; }
+        .show-cap .cap-name { font-size: 0.74rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--text); text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
+        .show-cap .cap-sub { font-size: 0.64rem; letter-spacing: 0.14em; color: var(--muted); margin-top: 0.2rem; text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
+        .show-cap .cap-price { font-family: var(--font-display); font-size: 1.4rem; color: var(--text); text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
 
         /* Features */
         .features {
@@ -249,8 +245,8 @@
 
         <div class="stage">
             <div class="showcase" id="showcase">
-                <video id="turntable" src="assets/blanco-black-360.mp4" muted loop autoplay playsinline preload="auto"></video>
-                <div class="show-vignette"></div>
+                <video id="turntable" src="assets/blanco-black-360.mp4" muted loop autoplay playsinline preload="auto" crossorigin="anonymous"></video>
+                <canvas id="turnCanvas" class="turntable-canvas"></canvas>
                 <div class="badge-360">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c5.5 0 10 2.5 10 5.5S17.5 16 12 16 2 13.5 2 10.5" stroke-linecap="round"/><path d="M6 8l-4 2.5L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     360° View
@@ -307,16 +303,44 @@
         /* ===== 360° turntable: autoplay spin + drag to rotate ===== */
         const showcase = document.getElementById('showcase');
         const video = document.getElementById('turntable');
-        let dragging = false, lastX = 0, wasPlaying = true;
+        const canvas = document.getElementById('turnCanvas');
+        const kctx = canvas.getContext('2d', { willReadFrequently: true });
 
+        // Live background key — makes the near-white studio backdrop transparent.
+        const KW = 800, KH = 450;   // processing resolution (16:9)
+        const HI = 242, LO = 202;   // luminance thresholds for the white key
+        canvas.width = KW; canvas.height = KH;
+        let keyFailed = false;
+
+        function keyFrame() {
+            if (keyFailed || video.readyState < 2) return;
+            try {
+                kctx.drawImage(video, 0, 0, KW, KH);
+                const frame = kctx.getImageData(0, 0, KW, KH);
+                const d = frame.data;
+                for (let i = 0; i < d.length; i += 4) {
+                    const m = Math.min(d[i], d[i + 1], d[i + 2]); // how "white/grey" the pixel is
+                    if (m >= HI) d[i + 3] = 0;                       // pure backdrop -> transparent
+                    else if (m > LO) d[i + 3] = Math.round(255 * (HI - m) / (HI - LO)); // feathered edge
+                }
+                kctx.putImageData(frame, 0, 0);
+            } catch (e) {
+                // Tainted canvas (e.g. some file:// setups) — fall back to a blend-mode wash.
+                keyFailed = true;
+                canvas.style.display = 'none';
+                video.style.opacity = '1';
+                video.style.mixBlendMode = 'multiply';
+            }
+        }
+
+        let dragging = false, lastX = 0, wasPlaying = true;
         if (reduce) { video.removeAttribute('autoplay'); video.pause(); }
 
         function seekBy(deltaPx) {
             const dur = video.duration || 10;
             const w = showcase.clientWidth || 1;
-            // full drag across the panel ≈ one full rotation of the clip
             let t = video.currentTime - (deltaPx / w) * dur;
-            t = ((t % dur) + dur) % dur;      // wrap seamlessly
+            t = ((t % dur) + dur) % dur;
             video.currentTime = t;
         }
 
@@ -341,7 +365,6 @@
         }
         showcase.addEventListener('pointerup', endDrag);
         showcase.addEventListener('pointercancel', endDrag);
-        // Some browsers block autoplay until interaction — nudge on hover.
         showcase.addEventListener('mouseenter', () => { if (!dragging && !reduce) video.play().catch(()=>{}); });
 
         /* ===== Cursor parallax + subtle showcase tilt ===== */
@@ -361,6 +384,7 @@
             const rotX = dragging ? 0 : -cur.y * 6;
             showcase.style.transform = `translateY(${bob}px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
 
+            keyFrame();
             requestAnimationFrame(animate);
         }
         animate();
