@@ -3,435 +3,561 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLANCO BLACK | Wearable Manifestos</title>
-    <meta name="description" content="BLANCO BLACK — Raw thoughts. Pure expressions. A scroll-driven manifesto.">
+    <title>BLANCO BLACK | Not Made To Fit In</title>
+    <meta name="description" content="BLANCO BLACK — Raw thoughts. Pure expressions. Wearable manifestos for the few who understand.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <style>
         :root {
-            --bg-0: #050505; --text: #ffffff;
-            --muted: rgba(255,255,255,0.6); --line: rgba(255,255,255,0.14);
-            --glass-border: rgba(255,255,255,0.16);
-            --font-body: 'Inter', sans-serif; --font-display: 'Playfair Display', serif;
+            --bg: #060606; --bg-2: #0d0d0f; --panel: #101012;
+            --text: #f4f2ee; --muted: rgba(244,242,238,0.55); --line: rgba(244,242,238,0.12);
+            --accent: #f4f2ee; --border: rgba(244,242,238,0.16);
+            --f-body: 'Inter', sans-serif; --f-serif: 'Playfair Display', serif; --f-cond: 'Bebas Neue', sans-serif;
         }
-        body.light-theme {
-            --bg-0: #ece9e4; --text: #0a0a0a;
-            --muted: rgba(10,10,10,0.6); --line: rgba(10,10,10,0.14); --glass-border: rgba(10,10,10,0.16);
-        }
+        body.light-theme { --bg: #f2f0ec; --bg-2:#e9e7e2; --panel:#ffffff; --text:#0a0a0a; --muted:rgba(10,10,10,0.55); --line:rgba(10,10,10,0.12); --border:rgba(10,10,10,0.16); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body {
-            background: var(--bg-0); color: var(--text); font-family: var(--font-body);
-            overflow-x: hidden;
-            transition: background 1s ease, color 1s ease;
-        }
+        body { background: var(--bg); color: var(--text); font-family: var(--f-body); overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background .8s ease, color .8s ease; }
         a { color: inherit; text-decoration: none; }
-        a:focus-visible, button:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+        img { display: block; max-width: 100%; }
+        button { font-family: inherit; cursor: pointer; }
+        a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+        .wrap { width: min(1280px, 92%); margin-inline: auto; }
+        .eyebrow { font-size: .68rem; letter-spacing: .34em; text-transform: uppercase; color: var(--muted); }
+        .serif { font-family: var(--f-serif); }
 
-        /* Fixed background */
-        .bg-banner {
-            position: fixed; inset: -6%; width: 112%; height: 112%;
-            background: center 24%/cover no-repeat;
-            filter: blur(8px) brightness(0.34) saturate(0.85);
-            transform: scale(1.05); z-index: 0; will-change: transform;
-            transition: filter 1s ease;
-        }
-        body.light-theme .bg-banner { filter: blur(10px) brightness(1.3) grayscale(0.25); }
-        .bg-veil {
-            position: fixed; inset: 0; z-index: 1; pointer-events: none;
-            background: radial-gradient(circle at 50% 45%, transparent 0%, rgba(0,0,0,0.5) 78%, rgba(0,0,0,0.82) 100%);
-        }
-        body.light-theme .bg-veil { background: radial-gradient(circle at 50% 45%, transparent 0%, rgba(236,233,228,0.55) 78%, rgba(236,233,228,0.85) 100%); }
+        /* word/line reveal masks */
+        .w { display: inline-block; overflow: hidden; vertical-align: top; }
+        .wi { display: inline-block; transform: translateY(110%); will-change: transform; }
+        .reveal { opacity: 0; }
+        .img-wipe { clip-path: inset(0 0 100% 0); will-change: clip-path; }
 
-        /* Scroll progress */
-        .scroll-progress { position: fixed; top: 0; left: 0; width: 100%; height: 2px; z-index: 90; background: transparent; }
-        .scroll-progress i { display: block; height: 100%; width: 0%; background: var(--text); transform-origin: left; }
+        /* scroll progress + cursor */
+        .progress { position: fixed; top: 0; left: 0; height: 2px; width: 100%; z-index: 200; }
+        .progress i { display: block; height: 100%; width: 0; background: var(--text); }
 
         /* Header */
-        .header {
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 80;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 1.4rem 3.5%; mix-blend-mode: difference;
-        }
-        .brand { display: flex; align-items: center; gap: 0.6rem; }
-        .brand svg { width: 34px; height: 26px; color: #fff; }
-        .brand .bm { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; letter-spacing: 0.34em; padding-left: 0.34em; color: #fff; }
-        .nav { display: flex; gap: 1.8rem; }
-        .nav a { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; opacity: 0.75; transition: opacity 0.3s; }
-        .nav a:hover, .nav a.active { opacity: 1; }
+        .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 150; padding: 1.5rem 4%; display: flex; align-items: center; justify-content: space-between; transition: transform .5s cubic-bezier(.4,0,.2,1), background .4s, backdrop-filter .4s; }
+        .header.scrolled { background: color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter: blur(14px); padding-block: 1rem; border-bottom: 1px solid var(--line); }
+        .header.hidden { transform: translateY(-100%); }
+        .h-nav, .h-actions { display: flex; align-items: center; gap: 1.8rem; }
+        .h-nav a, .h-actions button { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--text); opacity: .8; background: none; border: none; transition: opacity .3s; }
+        .h-nav a:hover, .h-actions button:hover { opacity: 1; }
+        .h-logo { font-family: var(--f-serif); font-weight: 700; letter-spacing: .3em; font-size: .95rem; padding-left: .3em; }
+        .cart-c { font-size: .58rem; vertical-align: super; }
 
-        /* Generic section */
-        section { position: relative; z-index: 20; }
-        .eyebrow { font-size: 0.7rem; letter-spacing: 0.42em; text-transform: uppercase; color: var(--muted); }
+        /* Crest */
+        .crest-svg { color: var(--text); }
 
-        /* 1 · INTRO */
-        .s-intro { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 1.5rem; }
-        .hero-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(3.5rem, 13vw, 12rem); line-height: 0.82; }
-        .scroll-cue { position: absolute; bottom: 2.4rem; font-size: 0.66rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
-        .scroll-cue .line { width: 1px; height: 42px; background: var(--line); overflow: hidden; position: relative; }
-        .scroll-cue .line::after { content: ""; position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: var(--text); animation: cue 1.8s ease-in-out infinite; }
-        @keyframes cue { 0% { top: -100%; } 60%,100% { top: 100%; } }
+        /* HERO */
+        .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; padding: 8rem 4% 4rem; }
+        .hero-model { position: absolute; top: 0; height: 100%; width: 32%; background-size: cover; background-position: center; z-index: 1; will-change: transform; }
+        .hero-model.left { left: 0; background-position: 26% 22%; -webkit-mask-image: linear-gradient(90deg,#000 55%,transparent); mask-image: linear-gradient(90deg,#000 55%,transparent); }
+        .hero-model.right { right: 0; background-position: 72% 22%; -webkit-mask-image: linear-gradient(-90deg,#000 55%,transparent); mask-image: linear-gradient(-90deg,#000 55%,transparent); }
+        .hero::after { content: ""; position: absolute; inset: 0; z-index: 2; background: radial-gradient(circle at 50% 42%, rgba(6,6,6,.2) 0%, rgba(6,6,6,.82) 72%); pointer-events: none; }
+        body.light-theme .hero::after { background: radial-gradient(circle at 50% 42%, rgba(242,240,236,.2) 0%, rgba(242,240,236,.85) 72%); }
+        .hero-inner { position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 1.1rem; max-width: 760px; }
+        .hero-crest { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+        .hero-crest .crest-svg { width: 92px; height: 66px; }
+        .hero-crest .name { font-family: var(--f-serif); font-weight: 700; letter-spacing: .4em; font-size: 1.7rem; padding-left: .4em; }
+        .hero-crest .tag { font-size: .58rem; letter-spacing: .34em; text-transform: uppercase; color: var(--muted); }
+        .hero-rule { width: 160px; height: 1px; background: var(--line); margin: .4rem 0; }
+        .hero-title { font-family: var(--f-serif); font-weight: 900; font-size: clamp(2.8rem, 7vw, 5.6rem); line-height: .96; letter-spacing: -.01em; }
+        .hero-sub { font-size: .7rem; letter-spacing: .26em; text-transform: uppercase; color: var(--muted); margin-top: .3rem; }
+        .hero-cta { display: flex; gap: 1rem; margin-top: 1.6rem; flex-wrap: wrap; justify-content: center; }
+        .btn { display: inline-flex; align-items: center; gap: .8rem; padding: 1rem 1.8rem; border-radius: 3px; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); transition: background .3s, color .3s, transform .2s; will-change: transform; }
+        .btn.solid { background: var(--text); color: var(--bg); border-color: var(--text); }
+        .btn .ar { transition: transform .3s; }
+        .btn:hover .ar { transform: translateX(5px); }
+        .moon-rail { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; display: flex; flex-direction: column; gap: 1.1rem; opacity: .5; }
+        .moon-rail.l { left: 2.4%; } .moon-rail.r { right: 2.4%; }
+        .moon { width: 12px; height: 12px; border-radius: 50%; background: var(--text); }
+        .moon:nth-child(1){opacity:.25} .moon:nth-child(2){box-shadow: inset -5px 0 0 var(--bg)} .moon:nth-child(3){box-shadow: inset -8px 0 0 var(--bg)} .moon:nth-child(5){box-shadow: inset 8px 0 0 var(--bg)} .moon:nth-child(6){box-shadow: inset 5px 0 0 var(--bg)} .moon:nth-child(7){opacity:.25}
 
-        /* 2 · PINNED MANIFESTO STAGE */
-        .s-pin { height: 560vh; }
-        .pin-stage {
-            height: 100vh; width: 100%;
-            position: relative; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-            perspective: 1600px;
-        }
-        /* Flying words (sweep behind the boxes) */
-        .words {
-            position: absolute; top: 50%; left: 0; transform: translateY(-50%);
-            display: flex; align-items: center; gap: 6vw; white-space: nowrap;
-            z-index: 12; will-change: transform; pointer-events: none;
-        }
-        .words span {
-            font-family: var(--font-display); font-weight: 900;
-            font-size: 20vw; line-height: 1; letter-spacing: -0.02em; color: var(--text);
-        }
-        .words span.ghost { -webkit-text-stroke: 1px var(--muted); color: transparent; }
-        .words .sep { font-size: 6vw; color: var(--muted); font-family: var(--font-body); }
+        /* FEATURE BAR */
+        .features { border-block: 1px solid var(--line); }
+        .features .wrap { display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem; padding: 2.2rem 0; }
+        .feat { display: flex; gap: 1rem; align-items: flex-start; }
+        .feat svg { width: 30px; height: 30px; flex-shrink: 0; opacity: .85; }
+        .feat h4 { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .3rem; }
+        .feat p { font-size: .72rem; line-height: 1.5; color: var(--muted); }
 
-        /* The two boxes */
-        .box {
-            position: absolute; z-index: 20;
-            width: min(30vw, 380px); aspect-ratio: 3 / 4.2;
-            transform-style: preserve-3d; will-change: transform;
-        }
-        .box-inner {
-            position: absolute; inset: 0; border-radius: 6px; overflow: hidden;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 50px 100px -40px rgba(0,0,0,0.9);
-            background: #000;
-        }
-        .box-img { position: absolute; inset: 0; background-size: cover; }
-        .box-l .box-img { background-position: 31% 20%; }
-        .box-r .box-img { background-position: 69% 20%; }
-        .box-inner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.7)); }
-        /* selection-frame ticks (ORYZO aesthetic) */
-        .ticks span { position: absolute; width: 12px; height: 12px; border: 1px solid rgba(255,255,255,0.7); z-index: 3; }
-        .ticks .tl { top: -6px; left: -6px; border-right: none; border-bottom: none; }
-        .ticks .tr { top: -6px; right: -6px; border-left: none; border-bottom: none; }
-        .ticks .bl { bottom: -6px; left: -6px; border-right: none; border-top: none; }
-        .ticks .br { bottom: -6px; right: -6px; border-left: none; border-top: none; }
-        .box-tag {
-            position: absolute; bottom: 0.7rem; left: 0.8rem; z-index: 4;
-            font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: #fff;
-            text-shadow: 0 1px 8px rgba(0,0,0,0.8);
-        }
-        /* running caption under boxes */
-        .pin-caption {
-            position: absolute; bottom: 8vh; left: 0; width: 100%; text-align: center; z-index: 25;
-            font-family: var(--font-display); font-style: italic; font-size: clamp(1rem, 1.6vw, 1.4rem);
-            color: var(--muted); padding: 0 1rem;
-        }
-        .pin-caption b { font-style: normal; color: var(--text); }
-        .stage-eyebrow { position: absolute; top: 12vh; left: 0; width: 100%; text-align: center; z-index: 25; }
+        /* SECTION HEAD */
+        .sec { padding: 7rem 0; }
+        .sec-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2.6rem; }
+        .sec-head h2 { font-family: var(--f-serif); font-weight: 700; font-size: clamp(1.8rem, 3.4vw, 2.8rem); letter-spacing: .02em; }
+        .link-all { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; display: inline-flex; gap: .5rem; align-items: center; color: var(--muted); }
+        .link-all:hover { color: var(--text); }
 
-        /* 3 · PRODUCT (360 turntable) */
-        .s-product { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 3%; padding: 12vh 5%; }
-        .prod-copy { display: flex; flex-direction: column; gap: 1.4rem; max-width: 440px; }
-        .prod-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.4rem, 4.6vw, 4.4rem); line-height: 0.92; }
-        .prod-copy p { color: var(--muted); line-height: 1.7; font-size: 1rem; }
-        .prod-spec { display: flex; gap: 2.4rem; margin-top: 0.6rem; }
-        .prod-spec div span:first-child { display: block; font-family: var(--font-display); font-size: 1.6rem; }
-        .prod-spec div span:last-child { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
-        .stage-360 {
-            position: relative; width: 100%; aspect-ratio: 16/9; cursor: grab; touch-action: pan-y;
-        }
+        /* PRODUCTS */
+        .p-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.4rem; }
+        .card { position: relative; }
+        .card .thumb { position: relative; aspect-ratio: 4/5; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); display: grid; place-items: center; transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s; }
+        .card:hover .thumb { transform: translateY(-6px); box-shadow: 0 40px 70px -40px rgba(0,0,0,.8); }
+        .thumb.black { background: linear-gradient(160deg,#151515,#050505); }
+        .thumb.white { background: linear-gradient(160deg,#fff,#e8e6e1); color: #0a0a0a; }
+        .badge-new { position: absolute; top: .7rem; left: .7rem; font-size: .56rem; letter-spacing: .18em; text-transform: uppercase; border: 1px solid currentColor; padding: .18rem .5rem; border-radius: 3px; opacity: .8; }
+        .tee-print { text-align: center; line-height: .92; font-weight: 800; letter-spacing: -.01em; }
+        .tee-print .big { font-size: 1.9rem; font-family: var(--f-cond); letter-spacing: .01em; }
+        .tee-print .sm { font-size: .5rem; letter-spacing: .12em; opacity: .8; font-weight: 500; margin: .12rem 0; font-family: var(--f-body); }
+        .tee-print .serif { font-family: var(--f-serif); font-weight: 700; font-size: 1.7rem; display: block; }
+        .quick { position: absolute; bottom: .8rem; left: 50%; transform: translate(-50%, 140%); background: var(--text); color: var(--bg); font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; padding: .7rem 1.4rem; border-radius: 3px; border: none; opacity: 0; transition: transform .4s cubic-bezier(.2,.8,.2,1), opacity .4s; white-space: nowrap; }
+        .card:hover .quick { transform: translate(-50%, 0); opacity: 1; }
+        .card-meta { padding: 1rem .2rem 0; text-align: center; }
+        .card-meta .nm { font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
+        .card-meta .vr { font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: .25rem 0; }
+        .card-meta .pr { font-family: var(--f-serif); font-size: 1rem; }
+
+        /* MARQUEE */
+        .marquee { border-block: 1px solid var(--line); padding: 1.5rem 0; overflow: hidden; white-space: nowrap; }
+        .marquee-track { display: inline-flex; gap: 3rem; will-change: transform; }
+        .marquee-track span { font-family: var(--f-serif); font-weight: 900; font-size: clamp(1.6rem,3vw,2.6rem); text-transform: uppercase; opacity: .9; }
+        .marquee-track span.o { -webkit-text-stroke: 1px var(--muted); color: transparent; }
+
+        /* MANIFESTO */
+        .manifesto { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 4%; align-items: center; }
+        .manifesto .m-copy { display: flex; flex-direction: column; gap: 1.3rem; }
+        .m-copy h2 { font-family: var(--f-serif); font-weight: 700; font-size: clamp(2rem,4.4vw,3.6rem); line-height: 1; }
+        .m-copy p { color: var(--muted); line-height: 1.8; max-width: 360px; }
+        .m-media { position: relative; aspect-ratio: 16/12; border-radius: 8px; overflow: hidden; }
+        .m-media .m-img { position: absolute; inset: -12% 0; background-size: cover; background-position: center 30%; will-change: transform; }
+        .m-media::after { content:""; position:absolute; inset:0; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,.5)); }
+
+        /* 360 BAND */
+        .drop360 { display: grid; grid-template-columns: 1fr 1.15fr; gap: 4%; align-items: center; }
+        .drop360 .d-copy { display: flex; flex-direction: column; gap: 1.2rem; max-width: 400px; }
+        .drop360 h2 { font-family: var(--f-serif); font-weight: 700; font-size: clamp(1.8rem,3.6vw,3rem); line-height: 1; }
+        .drop360 p { color: var(--muted); line-height: 1.7; }
+        .stage-360 { position: relative; width: 100%; aspect-ratio: 16/9; cursor: grab; touch-action: pan-y; }
         .stage-360.dragging { cursor: grabbing; }
         .stage-360 video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; }
-        .turntable-canvas { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 30px 48px rgba(0,0,0,0.6)); pointer-events: none; }
-        .badge-360 { position: absolute; top: 0.5rem; left: 0.5rem; z-index: 3; display: flex; align-items: center; gap: 0.4rem; font-size: 0.6rem; letter-spacing: 0.2em; font-weight: 700; text-transform: uppercase; padding: 0.4rem 0.75rem; border-radius: 100px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(8px); color: var(--text); }
-        .badge-360 svg { width: 13px; height: 13px; }
-        .drag-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 3; font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text); background: rgba(0,0,0,0.3); padding: 0.5rem 1rem; border-radius: 100px; backdrop-filter: blur(6px); pointer-events: none; transition: opacity 0.5s; }
-        .stage-360.touched .drag-hint { opacity: 0; }
+        .turntable-canvas { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 30px 48px rgba(0,0,0,.6)); pointer-events: none; }
+        .b360 { position: absolute; top: .6rem; left: .6rem; z-index: 3; display: flex; align-items: center; gap: .4rem; font-size: .58rem; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; padding: .4rem .7rem; border-radius: 100px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); backdrop-filter: blur(8px); }
+        .b360 svg { width: 12px; height: 12px; }
+        .hint360 { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 3; font-size: .64rem; letter-spacing: .22em; text-transform: uppercase; background: rgba(0,0,0,.32); padding: .5rem 1rem; border-radius: 100px; backdrop-filter: blur(6px); pointer-events: none; transition: opacity .5s; }
+        .stage-360.touched .hint360 { opacity: 0; }
 
-        /* 4 · FEATURES */
-        .s-features { padding: 14vh 5% 10vh; }
-        .s-features h2 { font-family: var(--font-display); font-weight: 900; font-size: clamp(2rem, 4vw, 3.6rem); margin-bottom: 3rem; text-align: center; }
-        .feat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-        .feat { background: var(--bg-0); padding: 2rem 1.6rem; display: flex; flex-direction: column; gap: 0.9rem; transition: background 1s ease; }
-        .feat .fi { width: 28px; height: 28px; opacity: 0.85; }
-        .feat h4 { font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; }
-        .feat p { font-size: 0.72rem; line-height: 1.5; color: var(--muted); }
+        /* COLLECTIONS */
+        .c-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.2rem; }
+        .coll { position: relative; aspect-ratio: 3/4; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+        .coll .c-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform .8s cubic-bezier(.2,.8,.2,1); }
+        .coll:hover .c-bg { transform: scale(1.08); }
+        .coll::after { content:""; position:absolute; inset:0; background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.75)); }
+        .coll .c-name { position: absolute; bottom: 1.2rem; left: 0; width: 100%; text-align: center; z-index: 2; font-family: var(--f-serif); font-weight: 700; font-size: 1.15rem; line-height: 1.1; color: #fff; }
+        .c-cosmic { background: radial-gradient(circle at 50% 30%, #2a2540, #0a0a12); }
+        .c-power { background: linear-gradient(160deg,#1a1a1a,#000); }
+        .c-chaos { background: radial-gradient(circle at 50% 60%, #3a2a20, #070707); }
+        .c-raw { background: linear-gradient(200deg,#26262a,#0b0b0d); }
 
-        /* 5 · CONTACT */
-        .s-contact { min-height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 2rem; padding: 10vh 5%; }
-        .contact-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.6rem, 8vw, 7rem); line-height: 0.85; }
-        .toggle-group { display: flex; gap: 1rem; }
-        .toggle-btn { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600; padding: 0.9rem 1.8rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--glass-border); background: transparent; color: var(--text); font-family: var(--font-body); transition: all 0.3s; }
-        .toggle-btn[data-collection="black"] { background: var(--text); color: var(--bg-0); border-color: var(--text); }
-        .toggle-btn.active { outline: 1px solid var(--text); outline-offset: 3px; }
-        .contact-foot { font-size: 0.64rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+        /* SYMBOL (pinned) */
+        .symbol-sec { position: relative; }
+        .symbol-pin { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4%; }
+        .sym-emblem { display: grid; place-items: center; }
+        .sym-emblem svg { width: min(38vh, 340px); height: auto; color: var(--text); will-change: transform; }
+        .sym-copy { display: flex; flex-direction: column; gap: 1.3rem; max-width: 420px; }
+        .sym-copy h2 { font-family: var(--f-serif); font-weight: 700; font-size: clamp(1.6rem,3vw,2.4rem); line-height: 1.1; }
+        .sym-copy p { color: var(--muted); line-height: 1.8; }
+
+        /* TESTIMONIALS */
+        .voices { text-align: center; }
+        .voices h2 { font-family: var(--f-serif); letter-spacing: .28em; text-transform: uppercase; font-size: clamp(1.1rem,2vw,1.5rem); margin-bottom: 3rem; }
+        .v-track { position: relative; min-height: 150px; max-width: 720px; margin-inline: auto; }
+        .v-item { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; gap: 1rem; opacity: 0; transition: opacity .7s ease; }
+        .v-item.active { opacity: 1; }
+        .v-stars { letter-spacing: .3em; color: var(--text); }
+        .v-item blockquote { font-family: var(--f-serif); font-style: italic; font-size: 1.4rem; line-height: 1.5; }
+        .v-item cite { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-style: normal; }
+        .v-dots { display: flex; gap: .5rem; justify-content: center; margin-top: 2.4rem; }
+        .v-dots button { width: 8px; height: 8px; border-radius: 50%; border: none; background: var(--line); transition: background .3s, transform .3s; }
+        .v-dots button.active { background: var(--text); transform: scale(1.3); }
+
+        /* NEWSLETTER */
+        .news { border-block: 1px solid var(--line); }
+        .news .wrap { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 2.6rem 0; flex-wrap: wrap; }
+        .news h4 { font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; margin-bottom: .3rem; }
+        .news p { font-size: .8rem; color: var(--muted); }
+        .news form { display: flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; min-width: 320px; flex: 1; max-width: 460px; }
+        .news input { flex: 1; background: transparent; border: none; color: var(--text); padding: .9rem 1rem; font-size: .8rem; }
+        .news button { background: var(--text); color: var(--bg); border: none; padding: 0 1.3rem; font-size: 1rem; }
+
+        /* FOOTER */
+        footer.site { padding: 4rem 0 2rem; }
+        .foot-grid { display: grid; grid-template-columns: 1.4fr repeat(4,1fr); gap: 2rem; padding-bottom: 3rem; border-bottom: 1px solid var(--line); }
+        .foot-brand .crest-svg { width: 60px; height: 44px; }
+        .foot-brand .name { font-family: var(--f-serif); font-weight: 700; letter-spacing: .3em; margin-top: .6rem; font-size: .9rem; }
+        .foot-col h5 { font-size: .64rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+        .foot-col a { display: block; font-size: .8rem; margin-bottom: .6rem; opacity: .85; }
+        .foot-col a:hover { opacity: 1; }
+        .foot-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 1.6rem; gap: 1rem; flex-wrap: wrap; }
+        .foot-bottom span { font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+        .socials { display: flex; gap: 1rem; }
+        .socials a { opacity: .7; } .socials a:hover { opacity: 1; }
+        .socials svg { width: 18px; height: 18px; }
 
         @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-        @media (max-width: 900px) {
-            .nav { display: none; }
-            .s-product { grid-template-columns: 1fr; gap: 3rem; }
-            .feat-grid { grid-template-columns: 1fr 1fr; }
-            .box { width: 42vw; }
-            .words span { font-size: 30vw; }
+        @media (max-width: 960px) {
+            .h-nav { display: none; }
+            .features .wrap { grid-template-columns: 1fr 1fr; }
+            .p-grid { grid-template-columns: 1fr 1fr; }
+            .c-grid { grid-template-columns: 1fr 1fr; }
+            .manifesto, .drop360, .symbol-pin { grid-template-columns: 1fr; }
+            .foot-grid { grid-template-columns: 1fr 1fr; }
+            .hero-model { width: 46%; opacity: .5; }
+        }
+        @media (max-width: 560px) {
+            .p-grid, .c-grid, .features .wrap, .foot-grid { grid-template-columns: 1fr; }
+            .moon-rail { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="scroll-progress"><i id="progressBar"></i></div>
-    <div class="bg-banner" id="bgBanner"></div>
-    <div class="bg-veil"></div>
+    <div class="progress"><i id="prog"></i></div>
 
-    <header class="header">
-        <a class="brand" href="#intro">
-            <svg viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M92 46 C70 40 48 40 30 48 C48 50 62 54 74 62 C56 58 40 60 26 66 C44 68 58 72 70 80 C54 78 40 82 30 88 C50 88 68 86 88 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M108 46 C130 40 152 40 170 48 C152 50 138 54 126 62 C144 58 160 60 174 66 C156 68 142 72 130 80 C146 78 160 82 170 88 C150 88 132 86 112 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M100 14 L100 108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                <path d="M88 40 L112 40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                <path d="M100 14 L95 22 L100 26 L105 22 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <text x="100" y="72" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="38" fill="currentColor">BB</text>
-            </svg>
-            <span class="bm">BLANCO BLACK</span>
-        </a>
-        <nav class="nav">
-            <a href="#intro" class="active">Intro</a>
-            <a href="#manifesto">Manifesto</a>
-            <a href="#product">Product</a>
-            <a href="#contact">Contact</a>
+    <header class="header" id="header">
+        <nav class="h-nav">
+            <a href="#new">Shop</a><a href="#collections">Collections</a><a href="#manifesto">Manifesto</a><a href="#collections">Lookbook</a>
         </nav>
+        <a href="#top" class="h-logo">BLANCO BLACK</a>
+        <div class="h-actions">
+            <button aria-label="Search">Search</button>
+            <button aria-label="Account">Account</button>
+            <button aria-label="Cart">Cart <span class="cart-c">0</span></button>
+        </div>
     </header>
 
-    <!-- 1 · INTRO -->
-    <section class="s-intro" id="intro">
-        <span class="eyebrow" data-fade>Wearable Manifestos</span>
-        <h1 class="hero-title" data-fade>BLANCO<br>BLACK</h1>
-        <span class="eyebrow" data-fade>Not for everyone. Made for the few who understand.</span>
-        <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
-    </section>
+    <!-- HERO -->
+    <section class="hero" id="top">
+        <div class="hero-model left" id="mL"></div>
+        <div class="hero-model right" id="mR"></div>
+        <div class="moon-rail l"><i class="moon"></i><i class="moon"></i><i class="moon"></i><i class="moon"></i><i class="moon"></i><i class="moon"></i><i class="moon"></i></div>
+        <div class="moon-rail r"><i class="moon"></i><i class="moon"></i><i class="moon"></i><i class="moon"></i><i class="moon"></i><i class="moon"></i><i class="moon"></i></div>
 
-    <!-- 2 · PINNED MANIFESTO -->
-    <section class="s-pin" id="manifesto">
-        <div class="pin-stage">
-            <span class="eyebrow stage-eyebrow" id="stageEyebrow">The Manifesto</span>
-
-            <div class="words" id="words">
-                <span>WHEN THE</span>
-                <span>POWER</span>
-                <span class="ghost">OF LOVE</span>
-                <span>OVERCOMES</span>
-                <span class="ghost">THE LOVE OF</span>
-                <span>POWER</span>
-                <span>THE WORLD</span>
-                <span class="ghost">WILL KNOW</span>
-                <span>PEACE</span>
+        <div class="hero-inner">
+            <div class="hero-crest" data-hero>
+                <svg class="crest-svg" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M92 46 C70 40 48 40 30 48 C48 50 62 54 74 62 C56 58 40 60 26 66 C44 68 58 72 70 80 C54 78 40 82 30 88 C50 88 68 86 88 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M108 46 C130 40 152 40 170 48 C152 50 138 54 126 62 C144 58 160 60 174 66 C156 68 142 72 130 80 C146 78 160 82 170 88 C150 88 132 86 112 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M100 12 L100 110" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M86 40 L114 40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M100 110 L95 100 M100 110 L105 100" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M100 12 L94 22 L100 27 L106 22 Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <text x="100" y="74" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="40" fill="currentColor">BB</text>
+                </svg>
+                <span class="name">BLANCO BLACK</span>
+                <span class="tag">Raw Thoughts. Pure Expressions.</span>
             </div>
-
-            <div class="box box-l" id="boxL">
-                <div class="box-inner">
-                    <div class="box-img" id="imgL"></div>
-                    <span class="ticks"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></span>
-                    <span class="box-tag">01 · Power / Love</span>
-                </div>
+            <div class="hero-rule" data-hero></div>
+            <h1 class="hero-title" data-hero-title>NOT MADE<br>TO FIT IN.</h1>
+            <span class="hero-sub" data-hero>Made for the few who understand.</span>
+            <div class="hero-cta" data-hero>
+                <button class="btn solid magnetic">Explore Black <span class="ar">→</span></button>
+                <button class="btn magnetic" data-white>Explore White <span class="ar">→</span></button>
             </div>
-            <div class="box box-r" id="boxR">
-                <div class="box-inner">
-                    <div class="box-img" id="imgR"></div>
-                    <span class="ticks"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></span>
-                    <span class="box-tag">02 · Will Know Peace</span>
-                </div>
-            </div>
-
-            <p class="pin-caption" id="pinCap">Two figures. <b>One manifesto.</b></p>
         </div>
     </section>
 
-    <!-- 3 · PRODUCT -->
-    <section class="s-product" id="product">
-        <div class="prod-copy">
-            <span class="eyebrow" data-fade>The Drop</span>
-            <h2 class="prod-title" data-fade>ISN'T JUST<br>A SHIRT.</h2>
-            <p data-fade>Oversized. Heavyweight. Every BLANCO BLACK piece is a statement you wear — raw thoughts printed in pure expression. Spin it. Read it. Live it.</p>
-            <div class="prod-spec" data-fade>
-                <div><span>240</span><span>GSM Cotton</span></div>
-                <div><span>360°</span><span>Drag to view</span></div>
-                <div><span>$2.99</span><span>Limited drop</span></div>
-            </div>
+    <!-- FEATURE BAR -->
+    <section class="features">
+        <div class="wrap">
+            <div class="feat reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg><div><h4>Raw &amp; Authentic</h4><p>Not just clothing. Statements that speak without words.</p></div></div>
+            <div class="feat reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4" fill="currentColor" stroke="none"/></svg><div><h4>Premium Quality</h4><p>Oversized fits. Heavyweight fabrics. Built to last.</p></div></div>
+            <div class="feat reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 3l2.5 5 5.5.8-4 4 1 5.5L12 20l-5 2.8 1-5.5-4-4 5.5-.8z" stroke-linejoin="round"/></svg><div><h4>Limited Drops</h4><p>Small batches. Thoughtful releases. Never mass produced.</p></div></div>
+            <div class="feat reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><div><h4>Worldwide Shipping</h4><p>Delivering statements to every corner of the world.</p></div></div>
         </div>
-        <div class="stage-360" id="showcase" data-fade>
+    </section>
+
+    <!-- NEW ARRIVALS -->
+    <section class="sec wrap" id="new">
+        <div class="sec-head">
+            <h2 class="split">New Arrivals</h2>
+            <a href="#collections" class="link-all">View All →</a>
+        </div>
+        <div class="p-grid">
+            <article class="card reveal">
+                <div class="thumb black"><span class="badge-new">New</span>
+                    <div class="tee-print"><span class="sm">When the</span><span class="big">POWER</span><span class="sm">of love overcomes</span><span class="big">POWER</span><span class="sm">the world will know</span><span class="serif">Peace</span></div>
+                    <button class="quick">Add to cart</button>
+                </div>
+                <div class="card-meta"><div class="nm">Power of Love Oversized Tee</div><div class="vr">Black</div><div class="pr">₹1,499.00</div></div>
+            </article>
+            <article class="card reveal">
+                <div class="thumb white"><span class="badge-new">New</span>
+                    <div class="tee-print"><span class="sm">When the</span><span class="big">POWER</span><span class="sm">of love overcomes</span><span class="big">POWER</span><span class="sm">the world will know</span><span class="serif">Peace</span></div>
+                    <button class="quick">Add to cart</button>
+                </div>
+                <div class="card-meta"><div class="nm">Power of Love Oversized Tee</div><div class="vr">White</div><div class="pr">₹1,499.00</div></div>
+            </article>
+            <article class="card reveal">
+                <div class="thumb black"><span class="badge-new">New</span>
+                    <svg class="crest-svg" style="width:96px" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M92 46 C70 40 48 40 30 48 C48 50 62 54 74 62 C56 58 40 60 26 66 C44 68 58 72 70 80 C54 78 40 82 30 88 C50 88 68 86 88 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M108 46 C130 40 152 40 170 48 C152 50 138 54 126 62 C144 58 160 60 174 66 C156 68 142 72 130 80 C146 78 160 82 170 88 C150 88 132 86 112 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 14 L100 108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M88 40 L112 40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><text x="100" y="72" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="38" fill="currentColor">BB</text></svg>
+                    <button class="quick">Add to cart</button>
+                </div>
+                <div class="card-meta"><div class="nm">BB Wings Oversized Tee</div><div class="vr">Black</div><div class="pr">₹1,399.00</div></div>
+            </article>
+            <article class="card reveal">
+                <div class="thumb white"><span class="badge-new">New</span>
+                    <svg class="crest-svg" style="width:96px" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M92 46 C70 40 48 40 30 48 C48 50 62 54 74 62 C56 58 40 60 26 66 C44 68 58 72 70 80 C54 78 40 82 30 88 C50 88 68 86 88 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M108 46 C130 40 152 40 170 48 C152 50 138 54 126 62 C144 58 160 60 174 66 C156 68 142 72 130 80 C146 78 160 82 170 88 C150 88 132 86 112 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 14 L100 108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M88 40 L112 40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><text x="100" y="72" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="38" fill="currentColor">BB</text></svg>
+                    <button class="quick">Add to cart</button>
+                </div>
+                <div class="card-meta"><div class="nm">BB Wings Oversized Tee</div><div class="vr">White</div><div class="pr">₹1,399.00</div></div>
+            </article>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee">
+        <div class="marquee-track" id="marquee">
+            <span>POWER</span><span class="o">OF LOVE</span><span>OVERCOMES</span><span class="o">THE LOVE OF</span><span>POWER</span><span class="o">·</span><span>PEACE</span><span class="o">·</span>
+            <span>POWER</span><span class="o">OF LOVE</span><span>OVERCOMES</span><span class="o">THE LOVE OF</span><span>POWER</span><span class="o">·</span><span>PEACE</span><span class="o">·</span>
+        </div>
+    </div>
+
+    <!-- MANIFESTO -->
+    <section class="sec wrap manifesto" id="manifesto">
+        <div class="m-copy">
+            <span class="eyebrow reveal">The Manifesto</span>
+            <h2 class="split">THIS IS<br>BLANCO BLACK.</h2>
+            <p class="reveal">We don't follow trends. We create expressions. Every piece is a reminder that you were never meant to blend in.</p>
+            <button class="btn magnetic reveal" style="align-self:flex-start">Read Our Story <span class="ar">→</span></button>
+        </div>
+        <div class="m-media">
+            <div class="m-img" id="mImg" data-parallax="60"></div>
+        </div>
+    </section>
+
+    <!-- 360 DROP -->
+    <section class="sec wrap drop360" id="drop">
+        <div class="d-copy">
+            <span class="eyebrow reveal">The Drop · 360°</span>
+            <h2 class="split">Spin the<br>statement.</h2>
+            <p class="reveal">Every angle is a manifesto. Grab it and rotate — read the message the way it's meant to be worn.</p>
+        </div>
+        <div class="stage-360 reveal" id="showcase">
             <video id="turntable" src="assets/blanco-black-360.mp4" muted loop autoplay playsinline preload="auto" crossorigin="anonymous"></video>
             <canvas id="turnCanvas" class="turntable-canvas"></canvas>
-            <div class="badge-360">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c5.5 0 10 2.5 10 5.5S17.5 16 12 16 2 13.5 2 10.5" stroke-linecap="round"/><path d="M6 8l-4 2.5L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                360° View
+            <div class="b360"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c5.5 0 10 2.5 10 5.5S17.5 16 12 16 2 13.5 2 10.5" stroke-linecap="round"/><path d="M6 8l-4 2.5L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> 360° View</div>
+            <div class="hint360">Drag to rotate</div>
+        </div>
+    </section>
+
+    <!-- COLLECTIONS -->
+    <section class="sec wrap" id="collections">
+        <div class="sec-head"><h2 class="split">Collections</h2><a href="#new" class="link-all">Explore All →</a></div>
+        <div class="c-grid">
+            <a class="coll reveal"><div class="c-bg c-cosmic"></div><div class="c-name">Cosmic<br>Goddess</div></a>
+            <a class="coll reveal"><div class="c-bg c-power" id="collPower"></div><div class="c-name">Power<br>of Love</div></a>
+            <a class="coll reveal"><div class="c-bg c-chaos"></div><div class="c-name">Chaos</div></a>
+            <a class="coll reveal"><div class="c-bg c-raw"></div><div class="c-name">Raw<br>Thoughts</div></a>
+        </div>
+    </section>
+
+    <!-- THE SYMBOL (pinned + scrub rotate) -->
+    <section class="symbol-sec" id="symbol">
+        <div class="symbol-pin">
+            <div class="sym-emblem">
+                <svg id="emblem" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M92 56 C68 48 44 48 24 58 C44 60 60 65 74 74 C54 70 36 72 20 80 C40 82 56 87 70 96 C52 94 36 98 24 106 C46 106 66 104 88 94" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M108 56 C132 48 156 48 176 58 C156 60 140 65 126 74 C146 70 164 72 180 80 C160 82 144 87 130 96 C148 94 164 98 176 106 C154 106 134 104 112 94" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M100 14 L100 130" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+                    <path d="M84 48 L116 48" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+                    <path d="M100 130 L94 118 M100 130 L106 118" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M100 14 L92 26 L100 33 L108 26 Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+                    <text x="100" y="90" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="46" fill="currentColor">BB</text>
+                </svg>
             </div>
-            <div class="drag-hint">Drag to rotate</div>
+            <div class="sym-copy">
+                <span class="eyebrow reveal">The Symbol</span>
+                <h2 class="split">Wings of freedom.<br>Sword of truth.</h2>
+                <p class="reveal">The wings represent limitless freedom. The sword stands for truth and strength. Together, they represent the Blanco Black belief.</p>
+                <button class="btn magnetic reveal" style="align-self:flex-start">Explore the Symbol <span class="ar">→</span></button>
+            </div>
         </div>
     </section>
 
-    <!-- 4 · FEATURES -->
-    <section class="s-features">
-        <h2 data-fade>Wearable manifestos, not merch.</h2>
-        <div class="feat-grid">
-            <div class="feat" data-fade><svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg><h4>Raw &amp; Authentic</h4><p>Statements that speak without words.</p></div>
-            <div class="feat" data-fade><svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.4" fill="currentColor" stroke="none"/></svg><h4>Premium Quality</h4><p>Oversized fits. Heavyweight fabrics.</p></div>
-            <div class="feat" data-fade><svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3l2.5 5 5.5.8-4 4 1 5.5L12 20l-5 2.8 1-5.5-4-4 5.5-.8z" stroke-linejoin="round"/></svg><h4>Limited Drops</h4><p>Small batches. Never mass produced.</p></div>
-            <div class="feat" data-fade><svg class="fi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><h4>Worldwide Shipping</h4><p>Statements to every corner of the world.</p></div>
+    <!-- VOICES -->
+    <section class="sec wrap voices" id="voices">
+        <h2 class="split">Voices of the Few</h2>
+        <div class="v-track" id="vTrack">
+            <div class="v-item active"><div class="v-stars">★★★★★</div><blockquote>"Blanco Black isn't just a brand. It's a mindset."</blockquote><cite>— Arjun M.</cite></div>
+            <div class="v-item"><div class="v-stars">★★★★★</div><blockquote>"The quality is top tier and the message hits different."</blockquote><cite>— Karan P.</cite></div>
+            <div class="v-item"><div class="v-stars">★★★★★</div><blockquote>"Finally a brand that speaks what we feel."</blockquote><cite>— Rohan S.</cite></div>
+        </div>
+        <div class="v-dots" id="vDots"></div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="news">
+        <div class="wrap">
+            <div class="reveal"><h4>Join the Movement</h4><p>Get early access to drops, exclusive offers and more.</p></div>
+            <form class="reveal" onsubmit="return false"><input type="email" placeholder="Enter your email" aria-label="Email"><button aria-label="Subscribe">→</button></form>
         </div>
     </section>
 
-    <!-- 5 · CONTACT -->
-    <footer class="s-contact" id="contact">
-        <span class="eyebrow" data-fade>Choose your side</span>
-        <h2 class="contact-title" data-fade>NOT FOR<br>EVERYONE.</h2>
-        <div class="toggle-group" data-fade>
-            <button class="toggle-btn active" data-collection="black">Black →</button>
-            <button class="toggle-btn" data-collection="white">White →</button>
+    <!-- FOOTER -->
+    <footer class="site">
+        <div class="wrap">
+            <div class="foot-grid">
+                <div class="foot-brand">
+                    <svg class="crest-svg" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M92 46 C70 40 48 40 30 48 C48 50 62 54 74 62 C56 58 40 60 26 66 C44 68 58 72 70 80 C54 78 40 82 30 88 C50 88 68 86 88 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M108 46 C130 40 152 40 170 48 C152 50 138 54 126 62 C144 58 160 60 174 66 C156 68 142 72 130 80 C146 78 160 82 170 88 C150 88 132 86 112 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 14 L100 108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M88 40 L112 40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><text x="100" y="72" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="38" fill="currentColor">BB</text></svg>
+                    <div class="name">BLANCO BLACK</div>
+                </div>
+                <div class="foot-col"><h5>Shop</h5><a href="#new">All Products</a><a href="#new">T-Shirts</a><a href="#new">Hoodies</a><a href="#new">Accessories</a></div>
+                <div class="foot-col"><h5>Brand</h5><a href="#manifesto">Our Story</a><a href="#manifesto">Manifesto</a><a href="#collections">Lookbook</a></div>
+                <div class="foot-col"><h5>Support</h5><a href="#">FAQs</a><a href="#">Shipping &amp; Returns</a><a href="#">Size Guide</a></div>
+                <div class="foot-col"><h5>Legal</h5><a href="#">Terms &amp; Conditions</a><a href="#">Privacy Policy</a></div>
+            </div>
+            <div class="foot-bottom">
+                <span>© 2025 Blanco Black. All rights reserved.</span>
+                <div class="socials">
+                    <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+                    <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l.5-3H13V9c0-.9.3-1.5 1.6-1.5H17V5c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1V11H8v3h2.6v8z"/></svg></a>
+                    <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M11 9l4 3-4 3z" fill="currentColor" stroke="none"/></svg></a>
+                    <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3h3l-7 8 8 10h-6l-5-6-5 6H2l8-9L3 3h6l4 5z"/></svg></a>
+                </div>
+            </div>
         </div>
-        <span class="contact-foot" data-fade>BLANCO BLACK · Raw thoughts. Pure expressions.</span>
     </footer>
 
     <script>
         const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        /* Background image + box images */
         const HERO_IMG = 'assets/banner.jpg';
-        document.getElementById('bgBanner').style.backgroundImage = `url("${HERO_IMG}")`;
-        document.getElementById('imgL').style.backgroundImage = `url("${HERO_IMG}")`;
-        document.getElementById('imgR').style.backgroundImage = `url("${HERO_IMG}")`;
+        document.getElementById('mL').style.backgroundImage = `url("${HERO_IMG}")`;
+        document.getElementById('mR').style.backgroundImage = `url("${HERO_IMG}")`;
+        document.getElementById('mImg').style.backgroundImage = `url("${HERO_IMG}")`;
+        document.getElementById('collPower').style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.6)), url("${HERO_IMG}")`;
+        document.getElementById('collPower').style.backgroundPosition = 'center 25%';
+        document.getElementById('collPower').style.backgroundSize = 'cover';
 
-        /* ===== Theme toggle ===== */
-        const toggles = document.querySelectorAll('.toggle-btn');
-        toggles.forEach(btn => btn.addEventListener('click', () => {
-            toggles.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.body.classList.toggle('light-theme', btn.dataset.collection === 'white');
-        }));
+        /* Explore White -> light theme */
+        document.querySelector('[data-white]').addEventListener('click', () => document.body.classList.add('light-theme'));
+        document.querySelector('.btn.solid').addEventListener('click', () => document.body.classList.remove('light-theme'));
 
-        /* ===== GSAP scroll choreography ===== */
+        /* Split headings into masked words */
+        function splitWords(el) {
+            const html = el.innerHTML.replace(/<br\s*\/?>/g, ' <br> ');
+            const parts = html.split(/\s+/);
+            el.innerHTML = parts.map(p => p === '<br>' ? '<br>' : `<span class="w"><span class="wi">${p}</span></span>`).join(' ');
+            return el.querySelectorAll('.wi');
+        }
+
         function initScroll() {
             gsap.registerPlugin(ScrollTrigger);
 
-            // Scroll progress bar
-            gsap.to('#progressBar', { width: '100%', ease: 'none',
-                scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.3 } });
+            /* progress bar */
+            gsap.to('#prog', { width: '100%', ease: 'none', scrollTrigger: { start: 0, end: () => document.body.scrollHeight - innerHeight, scrub: .3 } });
 
-            // Intro fade-out on scroll
-            gsap.to('.s-intro [data-fade]', {
-                y: -60, opacity: 0, ease: 'none',
-                scrollTrigger: { trigger: '.s-intro', start: 'top top', end: 'bottom top', scrub: true }
-            });
+            /* HERO entrance timeline */
+            const hero = gsap.timeline({ defaults: { ease: 'power3.out' } });
+            hero.from('[data-hero]', { y: 24, opacity: 0, duration: 1, stagger: .12 }, .1);
+            const htWords = splitWords(document.querySelector('[data-hero-title]'));
+            hero.to(htWords, { y: 0, duration: 1.1, stagger: .09, ease: 'power4.out' }, .35);
+            gsap.from(['#mL', '#mR'], { opacity: 0, duration: 1.6, ease: 'power2.out' });
 
-            // Generic reveal for [data-fade] outside the intro
-            gsap.utils.toArray('[data-fade]').forEach(el => {
-                if (el.closest('.s-intro')) return;
-                gsap.from(el, {
-                    y: 40, opacity: 0, duration: 0.9, ease: 'power3.out',
-                    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+            /* Hero parallax (mouse + scroll) */
+            if (!reduce) {
+                window.addEventListener('mousemove', e => {
+                    const x = (e.clientX / innerWidth - .5), y = (e.clientY / innerHeight - .5);
+                    gsap.to('#mL', { xPercent: x * 6, yPercent: y * 4, duration: .8 });
+                    gsap.to('#mR', { xPercent: x * 6, yPercent: y * 4, duration: .8 });
                 });
+                gsap.to('#mL', { yPercent: 14, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+                gsap.to('#mR', { yPercent: 14, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+                gsap.to('.hero-inner', { yPercent: -18, opacity: .3, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+            }
+
+            /* Split-text reveal for every .split heading on scroll */
+            gsap.utils.toArray('.split').forEach(h => {
+                const wis = splitWords(h);
+                gsap.to(wis, { y: 0, duration: 1, stagger: .06, ease: 'power4.out',
+                    scrollTrigger: { trigger: h, start: 'top 85%' } });
             });
 
-            // ---- The pinned manifesto: two boxes + sweeping words ----
-            const stage = gsap.timeline({
-                scrollTrigger: {
-                    trigger: '.s-pin', start: 'top top', end: 'bottom bottom',
-                    scrub: 1, pin: '.pin-stage', anticipatePin: 1
+            /* Batch reveal for .reveal */
+            gsap.set('.reveal', { y: 42, opacity: 0 });
+            ScrollTrigger.batch('.reveal', {
+                start: 'top 88%',
+                onEnter: b => gsap.to(b, { y: 0, opacity: 1, duration: .9, stagger: .09, ease: 'power3.out', overwrite: true })
+            });
+
+            /* Parallax elements */
+            gsap.utils.toArray('[data-parallax]').forEach(el => {
+                const d = parseFloat(el.dataset.parallax) || 40;
+                gsap.fromTo(el, { yPercent: -d/6 }, { yPercent: d/6, ease: 'none',
+                    scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } });
+            });
+
+            /* Infinite marquee (scroll speeds it up) */
+            const mq = gsap.to('#marquee', { xPercent: -50, duration: 24, ease: 'none', repeat: -1 });
+            let vel = 1;
+            ScrollTrigger.create({ start: 0, end: 'max', onUpdate: self => { vel = 1 + Math.min(Math.abs(self.getVelocity()) / 400, 6); } });
+            gsap.ticker.add(() => { mq.timeScale(vel); vel += (1 - vel) * 0.05; });
+
+            /* Pinned symbol: scrub rotate + scale */
+            if (!reduce) {
+                gsap.timeline({ scrollTrigger: { trigger: '.symbol-sec', start: 'top top', end: '+=120%', pin: '.symbol-pin', scrub: 1 } })
+                    .fromTo('#emblem', { rotationZ: 0 }, { rotation: 360, scale: 1.15, ease: 'none' });
+            }
+
+            /* Header hide/show on scroll direction */
+            const header = document.getElementById('header');
+            ScrollTrigger.create({
+                start: 'top -80', end: 'max',
+                onUpdate: self => {
+                    header.classList.toggle('scrolled', self.scroll() > 80);
+                    header.classList.toggle('hidden', self.direction === 1 && self.scroll() > 300);
                 }
             });
-
-            // words sweep from right to far left across the whole pin
-            stage.fromTo('#words',
-                { xPercent: 12 },
-                { xPercent: -142, ease: 'none', duration: 10 }, 0);
-
-            // Left box choreography
-            stage.fromTo('#boxL',
-                { xPercent: -60, yPercent: 0, scale: 0.82, rotationY: 16, rotationZ: -2 },
-                { keyframes: [
-                    { xPercent: -128, scale: 0.9, rotationY: 26, duration: 3 },
-                    { xPercent: -70, yPercent: -6, scale: 1.06, rotationY: -14, duration: 4 },
-                    { xPercent: -96, yPercent: 0, scale: 0.92, rotationY: 0, duration: 3 }
-                ], ease: 'power1.inOut' }, 0);
-
-            // Right box choreography (mirror)
-            stage.fromTo('#boxR',
-                { xPercent: 60, yPercent: 0, scale: 0.82, rotationY: -16, rotationZ: 2 },
-                { keyframes: [
-                    { xPercent: 128, scale: 0.9, rotationY: -26, duration: 3 },
-                    { xPercent: 70, yPercent: 6, scale: 1.06, rotationY: 14, duration: 4 },
-                    { xPercent: 96, yPercent: 0, scale: 0.92, rotationY: 0, duration: 3 }
-                ], ease: 'power1.inOut' }, 0);
-
-            // Running caption swaps
-            const caps = [
-                'Two figures. <b>One manifesto.</b>',
-                'When the power of <b>love</b>…',
-                '…overcomes the love of <b>power</b>…',
-                '…the world will know <b>peace.</b>'
-            ];
-            const cap = document.getElementById('pinCap');
-            [0.12, 0.4, 0.66, 0.9].forEach((p, i) => {
-                ScrollTrigger.create({
-                    trigger: '.s-pin', start: 'top top', end: 'bottom bottom',
-                    onUpdate: self => { if (self.progress >= p && cap.dataset.i != i) { cap.dataset.i = i; cap.innerHTML = caps[i]; } }
-                });
-            });
-
-            // Nav active-state sync
-            const secs = ['#intro', '#manifesto', '#product', '#contact'];
-            secs.forEach(id => ScrollTrigger.create({
-                trigger: id, start: 'top center', end: 'bottom center',
-                onToggle: self => { if (self.isActive) {
-                    document.querySelectorAll('.nav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
-                } }
-            }));
         }
 
         if (window.gsap && window.ScrollTrigger) initScroll();
-        else window.addEventListener('load', () => { if (window.gsap && window.ScrollTrigger) initScroll(); });
+        else addEventListener('load', () => { if (window.gsap && window.ScrollTrigger) initScroll(); });
 
-        /* ===== 360° turntable in product section (drag + white-bg key) ===== */
-        const showcase = document.getElementById('showcase');
-        const video = document.getElementById('turntable');
-        const canvas = document.getElementById('turnCanvas');
-        const kctx = canvas.getContext('2d', { willReadFrequently: true });
-        const KW = 800, KH = 450, HI = 242, LO = 202;
-        canvas.width = KW; canvas.height = KH;
-        let keyFailed = false;
+        /* Magnetic buttons */
+        if (!reduce) document.querySelectorAll('.magnetic').forEach(b => {
+            b.addEventListener('mousemove', e => {
+                const r = b.getBoundingClientRect();
+                gsap.to(b, { x: (e.clientX - r.left - r.width/2) * .4, y: (e.clientY - r.top - r.height/2) * .5, duration: .4 });
+            });
+            b.addEventListener('mouseleave', () => gsap.to(b, { x: 0, y: 0, duration: .5, ease: 'elastic.out(1,.4)' }));
+        });
 
-        function keyFrame() {
-            if (keyFailed || video.readyState < 2) return;
-            try {
-                kctx.drawImage(video, 0, 0, KW, KH);
-                const f = kctx.getImageData(0, 0, KW, KH), d = f.data;
-                for (let i = 0; i < d.length; i += 4) {
-                    const m = Math.min(d[i], d[i+1], d[i+2]);
-                    if (m >= HI) d[i+3] = 0;
-                    else if (m > LO) d[i+3] = Math.round(255 * (HI - m) / (HI - LO));
-                }
-                kctx.putImageData(f, 0, 0);
-            } catch (e) {
-                keyFailed = true; canvas.style.display = 'none';
-                video.style.opacity = '1'; video.style.mixBlendMode = 'multiply';
+        /* Testimonial carousel */
+        (function () {
+            const items = document.querySelectorAll('.v-item'), dotsWrap = document.getElementById('vDots');
+            let i = 0;
+            items.forEach((_, n) => { const d = document.createElement('button'); if (!n) d.className = 'active'; d.addEventListener('click', () => go(n)); dotsWrap.appendChild(d); });
+            const dots = dotsWrap.children;
+            function go(n) { items[i].classList.remove('active'); dots[i].classList.remove('active'); i = n; items[i].classList.add('active'); dots[i].classList.add('active'); }
+            if (!reduce) setInterval(() => go((i + 1) % items.length), 4500);
+        })();
+
+        /* 360 turntable (drag + white key) */
+        (function () {
+            const showcase = document.getElementById('showcase'), video = document.getElementById('turntable');
+            const canvas = document.getElementById('turnCanvas'), kctx = canvas.getContext('2d', { willReadFrequently: true });
+            const KW = 800, KH = 450, HI = 242, LO = 202; canvas.width = KW; canvas.height = KH;
+            let keyFailed = false;
+            function keyFrame() {
+                if (keyFailed || video.readyState < 2) return;
+                try {
+                    kctx.drawImage(video, 0, 0, KW, KH);
+                    const f = kctx.getImageData(0, 0, KW, KH), d = f.data;
+                    for (let k = 0; k < d.length; k += 4) { const m = Math.min(d[k], d[k+1], d[k+2]); if (m >= HI) d[k+3] = 0; else if (m > LO) d[k+3] = Math.round(255 * (HI - m) / (HI - LO)); }
+                    kctx.putImageData(f, 0, 0);
+                } catch (e) { keyFailed = true; canvas.style.display = 'none'; video.style.opacity = '1'; video.style.mixBlendMode = 'multiply'; }
             }
-        }
-        function canvasLoop() { keyFrame(); requestAnimationFrame(canvasLoop); }
-        canvasLoop();
-        if (reduce) { video.removeAttribute('autoplay'); video.pause(); }
-
-        let dragging = false, lastX = 0, wasPlaying = true;
-        function seekBy(dx) {
-            const dur = video.duration || 10, w = showcase.clientWidth || 1;
-            let t = video.currentTime - (dx / w) * dur;
-            video.currentTime = ((t % dur) + dur) % dur;
-        }
-        showcase.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; wasPlaying = !video.paused; video.pause(); showcase.classList.add('dragging','touched'); showcase.setPointerCapture(e.pointerId); });
-        showcase.addEventListener('pointermove', e => { if (dragging) { seekBy(e.clientX - lastX); lastX = e.clientX; } });
-        function endDrag(e) { if (!dragging) return; dragging = false; showcase.classList.remove('dragging'); try { showcase.releasePointerCapture(e.pointerId); } catch(_){} if (wasPlaying && !reduce) video.play().catch(()=>{}); }
-        showcase.addEventListener('pointerup', endDrag);
-        showcase.addEventListener('pointercancel', endDrag);
+            (function loop(){ keyFrame(); requestAnimationFrame(loop); })();
+            if (reduce) { video.removeAttribute('autoplay'); video.pause(); }
+            let dragging = false, lastX = 0, wasPlaying = true;
+            function seekBy(dx){ const dur = video.duration || 10, w = showcase.clientWidth || 1; let t = video.currentTime - (dx/w)*dur; video.currentTime = ((t % dur) + dur) % dur; }
+            showcase.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; wasPlaying = !video.paused; video.pause(); showcase.classList.add('dragging','touched'); showcase.setPointerCapture(e.pointerId); });
+            showcase.addEventListener('pointermove', e => { if (dragging) { seekBy(e.clientX - lastX); lastX = e.clientX; } });
+            function end(e){ if (!dragging) return; dragging = false; showcase.classList.remove('dragging'); try { showcase.releasePointerCapture(e.pointerId); } catch(_){} if (wasPlaying && !reduce) video.play().catch(()=>{}); }
+            showcase.addEventListener('pointerup', end); showcase.addEventListener('pointercancel', end);
+        })();
     </script>
 </body>
 </html>
