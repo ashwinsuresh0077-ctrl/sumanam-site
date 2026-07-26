@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power of Love Oversized Tee | BLANCO BLACK</title>
+    <meta name="description" content="Power of Love Oversized Tee — a wearable manifesto. 240 GSM heavyweight cotton. Oversized fit.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700;900&family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg: #060606; --panel: #101012; --text: #f4f2ee; --muted: rgba(244,242,238,0.55);
+            --line: rgba(244,242,238,0.12); --border: rgba(244,242,238,0.16);
+            --f-body: 'Inter', sans-serif; --f-serif: 'Playfair Display', serif; --f-cond: 'Bebas Neue', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--text); font-family: var(--f-body); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        a { color: inherit; text-decoration: none; } img { display: block; max-width: 100%; } button { font-family: inherit; cursor: pointer; }
+        a:focus-visible, button:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+        .wrap { width: min(1280px, 92%); margin-inline: auto; }
+        .eyebrow { font-size: .68rem; letter-spacing: .34em; text-transform: uppercase; color: var(--muted); }
+        .w { display: inline-block; overflow: hidden; vertical-align: top; }
+        .wi { display: inline-block; transform: translateY(110%); will-change: transform; }
+        .reveal { opacity: 0; }
+        .progress { position: fixed; top: 0; left: 0; height: 2px; width: 100%; z-index: 200; } .progress i { display: block; height: 100%; width: 0; background: var(--text); }
+
+        .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 150; padding: 1.3rem 4%; display: flex; align-items: center; justify-content: space-between; background: color-mix(in srgb, var(--bg) 72%, transparent); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+        .h-nav { display: flex; gap: 1.8rem; } .h-actions { display: flex; gap: 1.6rem; align-items: center; }
+        .h-nav a, .h-actions button { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; opacity: .8; background: none; border: none; color: var(--text); }
+        .h-nav a:hover { opacity: 1; } .h-logo { font-family: var(--f-serif); font-weight: 700; letter-spacing: .3em; font-size: .95rem; padding-left: .3em; }
+        .cart-c { font-size: .58rem; vertical-align: super; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: .7rem; padding: 1.05rem 1.8rem; border-radius: 3px; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--text); transition: background .3s, color .3s; will-change: transform; }
+        .btn.solid { background: var(--text); color: var(--bg); border-color: var(--text); }
+        .btn .ar { transition: transform .3s; } .btn:hover .ar { transform: translateX(5px); }
+
+        .breadcrumb { padding: 7rem 0 1.5rem; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+        .breadcrumb a:hover { color: var(--text); }
+
+        /* PRODUCT MAIN */
+        .pmain { display: grid; grid-template-columns: 1.15fr .85fr; gap: 4%; align-items: start; padding-bottom: 5rem; }
+        .gallery { position: sticky; top: 6rem; display: flex; flex-direction: column; gap: 1rem; }
+        .g-stage { position: relative; width: 100%; aspect-ratio: 4/4.4; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: #0b0b0d; }
+        .view { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .5s ease; display: grid; place-items: center; }
+        .view.active { opacity: 1; visibility: visible; }
+        /* 360 view */
+        .view-360 { cursor: grab; touch-action: pan-y; } .view-360.dragging { cursor: grabbing; }
+        .view-360 video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; }
+        .turntable-canvas { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 30px 48px rgba(0,0,0,.6)); pointer-events: none; }
+        .b360 { position: absolute; top: .7rem; left: .7rem; z-index: 3; display: flex; align-items: center; gap: .4rem; font-size: .58rem; letter-spacing: .2em; font-weight: 700; text-transform: uppercase; padding: .4rem .7rem; border-radius: 100px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); backdrop-filter: blur(8px); }
+        .b360 svg { width: 12px; height: 12px; }
+        .hint360 { position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 3; font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; background: rgba(0,0,0,.32); padding: .45rem 1rem; border-radius: 100px; backdrop-filter: blur(6px); pointer-events: none; transition: opacity .5s; }
+        .view-360.touched .hint360 { opacity: 0; }
+        /* print view (CSS tee) */
+        .view-print { background: linear-gradient(160deg,#151515,#050505); }
+        .view-print.white { background: linear-gradient(160deg,#fff,#e8e6e1); color: #0a0a0a; }
+        .tee-print { text-align: center; line-height: .94; font-weight: 800; }
+        .tee-print .big { font-family: var(--f-cond); font-size: 4rem; letter-spacing: .01em; }
+        .tee-print .sm { font-size: .8rem; letter-spacing: .1em; opacity: .8; font-weight: 500; margin: .3rem 0; }
+        .tee-print .serif { font-family: var(--f-serif); font-weight: 700; font-size: 3.4rem; display: block; }
+        /* worn view */
+        .view-worn { background-size: cover; background-position: center 22%; }
+        .thumbs { display: flex; gap: .7rem; }
+        .thumb { flex: 1; aspect-ratio: 1; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: #0b0b0d; cursor: pointer; display: grid; place-items: center; font-size: .55rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); transition: border-color .3s; position: relative; }
+        .thumb.active { border-color: var(--text); }
+        .thumb .mini { font-family: var(--f-cond); font-size: 1.1rem; color: var(--text); line-height: .85; text-align: center; }
+        .thumb.tw { background: linear-gradient(160deg,#fff,#e8e6e1); } .thumb.tw .mini { color: #0a0a0a; }
+        .thumb.worn { background-size: cover; background-position: center 22%; }
+
+        /* INFO */
+        .info { display: flex; flex-direction: column; gap: 1.3rem; padding-top: .5rem; }
+        .info .cat { font-size: .66rem; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
+        .info h1 { font-family: var(--f-serif); font-weight: 700; font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.02; }
+        .rating { display: flex; align-items: center; gap: .6rem; font-size: .72rem; color: var(--muted); }
+        .rating .stars { color: var(--text); letter-spacing: .2em; }
+        .price { font-family: var(--f-serif); font-size: 1.7rem; }
+        .price .was { font-size: 1rem; color: var(--muted); text-decoration: line-through; margin-left: .6rem; }
+        .divider { height: 1px; background: var(--line); }
+        .opt-label { font-size: .64rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: .7rem; display: flex; justify-content: space-between; }
+        .swatches { display: flex; gap: .6rem; }
+        .swatch { display: flex; align-items: center; gap: .5rem; padding: .55rem .9rem; border: 1px solid var(--border); border-radius: 4px; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; background: transparent; color: var(--text); transition: border-color .3s; }
+        .swatch .dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--border); }
+        .swatch.active { border-color: var(--text); }
+        .sizes { display: flex; gap: .5rem; flex-wrap: wrap; }
+        .size { width: 46px; height: 46px; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--text); font-size: .74rem; letter-spacing: .06em; transition: all .25s; }
+        .size:hover { border-color: var(--text); } .size.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+        .size.oos { opacity: .3; text-decoration: line-through; cursor: not-allowed; }
+        .buy-row { display: flex; gap: .8rem; align-items: stretch; }
+        .qty { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 3px; }
+        .qty button { width: 44px; height: 100%; background: none; border: none; color: var(--text); font-size: 1.1rem; }
+        .qty span { width: 34px; text-align: center; font-variant-numeric: tabular-nums; font-size: .9rem; }
+        .buy-row .btn.solid { flex: 1; }
+        .assurances { display: flex; flex-direction: column; gap: .55rem; margin-top: .3rem; }
+        .assurances div { display: flex; gap: .6rem; align-items: center; font-size: .74rem; color: var(--muted); }
+        .assurances svg { width: 16px; height: 16px; opacity: .8; }
+        /* accordion */
+        .acc { border-top: 1px solid var(--line); }
+        .acc-item { border-bottom: 1px solid var(--line); }
+        .acc-head { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.1rem 0; background: none; border: none; color: var(--text); font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; }
+        .acc-head .pm { transition: transform .3s; } .acc-item.open .pm { transform: rotate(45deg); }
+        .acc-body { max-height: 0; overflow: hidden; transition: max-height .45s ease; }
+        .acc-body p { padding: 0 0 1.2rem; color: var(--muted); line-height: 1.7; font-size: .84rem; }
+
+        /* PRINT BAND */
+        .band { padding: 7rem 0; text-align: center; border-top: 1px solid var(--line); }
+        .band h2 { font-family: var(--f-serif); font-weight: 900; font-size: clamp(2rem,5vw,4rem); line-height: 1; }
+        .band p { color: var(--muted); max-width: 460px; margin: 1.4rem auto 0; line-height: 1.8; }
+
+        /* SPECS */
+        .specs { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line); border-block: 1px solid var(--line); }
+        .spec { background: var(--bg); padding: 2.4rem 1.4rem; text-align: center; }
+        .spec .n { font-family: var(--f-serif); font-size: 2.2rem; } .spec .l { font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-top: .4rem; }
+
+        /* RELATED */
+        .rel { padding: 7rem 0; }
+        .rel h2 { font-family: var(--f-serif); font-weight: 700; font-size: clamp(1.6rem,3vw,2.4rem); margin-bottom: 2.4rem; text-align: center; }
+        .p-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.4rem; }
+        .card .thumb2 { aspect-ratio: 4/5; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); display: grid; place-items: center; transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s; }
+        .card:hover .thumb2 { transform: translateY(-6px); box-shadow: 0 40px 70px -40px rgba(0,0,0,.8); }
+        .thumb2.black { background: linear-gradient(160deg,#151515,#050505); } .thumb2.white { background: linear-gradient(160deg,#fff,#e8e6e1); color:#0a0a0a; }
+        .card-meta { padding: 1rem .2rem 0; text-align: center; } .card-meta .nm { font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; } .card-meta .pr { font-family: var(--f-serif); font-size: 1rem; margin-top: .3rem; }
+        .tp2 { text-align:center; line-height:.92; font-weight:800; } .tp2 .b { font-family: var(--f-cond); font-size: 1.7rem; } .tp2 .s { font-size:.46rem; letter-spacing:.1em; opacity:.8; margin:.1rem 0; font-weight:500; } .tp2 .sf { font-family: var(--f-serif); font-weight:700; font-size:1.5rem; display:block; }
+
+        /* sticky buy bar */
+        .buybar { position: fixed; left: 0; bottom: 0; width: 100%; z-index: 140; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(14px); border-top: 1px solid var(--line); transform: translateY(100%); transition: transform .4s cubic-bezier(.4,0,.2,1); }
+        .buybar.show { transform: translateY(0); }
+        .buybar .wrap { display: flex; align-items: center; justify-content: space-between; padding: .9rem 0; gap: 1rem; }
+        .buybar .bb-l { display: flex; align-items: center; gap: 1rem; } .buybar .bb-nm { font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600; } .buybar .bb-pr { font-family: var(--f-serif); color: var(--muted); }
+
+        /* toast */
+        .toast { position: fixed; top: 5.5rem; left: 50%; transform: translateX(-50%) translateY(-20px); z-index: 300; background: var(--text); color: var(--bg); padding: .8rem 1.4rem; border-radius: 4px; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        footer.site { padding: 4rem 0 2rem; border-top: 1px solid var(--line); }
+        .foot-bottom { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .foot-bottom span { font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+        .foot-logo { font-family: var(--f-serif); font-weight: 700; letter-spacing: .3em; }
+
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+        @media (max-width: 960px) {
+            .h-nav { display: none; } .pmain { grid-template-columns: 1fr; } .gallery { position: static; }
+            .specs { grid-template-columns: 1fr 1fr; } .p-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 560px) { .p-grid, .specs { grid-template-columns: 1fr; } .buy-row { flex-wrap: wrap; } }
+    </style>
+</head>
+<body>
+    <div class="progress"><i id="prog"></i></div>
+    <div class="toast" id="toast">Added to bag</div>
+
+    <header class="header">
+        <nav class="h-nav"><a href="index.html#new">Shop</a><a href="index.html#collections">Collections</a><a href="index.html#manifesto">Manifesto</a><a href="index.html#collections">Lookbook</a></nav>
+        <a href="index.html" class="h-logo">BLANCO BLACK</a>
+        <div class="h-actions"><button aria-label="Search">Search</button><button aria-label="Account">Account</button><button aria-label="Cart">Cart <span class="cart-c" id="cartC">0</span></button></div>
+    </header>
+
+    <div class="wrap breadcrumb reveal"><a href="index.html">Home</a> / <a href="index.html#new">T-Shirts</a> / <span>Power of Love Oversized Tee</span></div>
+
+    <main class="wrap pmain">
+        <!-- GALLERY -->
+        <div class="gallery">
+            <div class="g-stage" id="stage">
+                <div class="view view-360 active" id="v360">
+                    <video id="turntable" src="assets/blanco-black-360.mp4" muted loop autoplay playsinline preload="auto" crossorigin="anonymous"></video>
+                    <canvas id="turnCanvas" class="turntable-canvas"></canvas>
+                    <div class="b360"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5c5.5 0 10 2.5 10 5.5S17.5 16 12 16 2 13.5 2 10.5" stroke-linecap="round"/><path d="M6 8l-4 2.5L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> 360° View</div>
+                    <div class="hint360">Drag to rotate</div>
+                </div>
+                <div class="view view-print" id="vPrint">
+                    <div class="tee-print"><span class="sm">When the</span><span class="big">POWER</span><span class="sm">of love overcomes the love of</span><span class="big">POWER</span><span class="sm">the world will know</span><span class="serif">Peace</span></div>
+                </div>
+                <div class="view view-worn" id="vWorn"></div>
+            </div>
+            <div class="thumbs">
+                <button class="thumb active" data-view="v360"><span class="mini">360°</span></button>
+                <button class="thumb tb" data-view="vPrint"><span class="mini">FRONT</span></button>
+                <button class="thumb worn" data-view="vWorn" id="thWorn"></button>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="info">
+            <span class="cat reveal">Wearable Manifesto</span>
+            <h1 class="split">Power of Love<br>Oversized Tee</h1>
+            <div class="rating reveal"><span class="stars">★★★★★</span> 4.9 · 128 reviews</div>
+            <div class="price reveal" id="price">₹1,499.00 <span class="was">₹1,999.00</span></div>
+            <div class="divider reveal"></div>
+
+            <div class="reveal">
+                <div class="opt-label"><span>Colour</span><span id="colName">Black</span></div>
+                <div class="swatches" id="swatches">
+                    <button class="swatch active" data-col="black"><span class="dot" style="background:#0a0a0a"></span> Black</button>
+                    <button class="swatch" data-col="white"><span class="dot" style="background:#fff"></span> White</button>
+                </div>
+            </div>
+
+            <div class="reveal">
+                <div class="opt-label"><span>Size</span><a href="#" style="color:var(--muted)">Size guide</a></div>
+                <div class="sizes" id="sizes">
+                    <button class="size">S</button><button class="size">M</button><button class="size">L</button><button class="size">XL</button><button class="size oos">XXL</button>
+                </div>
+            </div>
+
+            <div class="buy-row reveal">
+                <div class="qty"><button id="qMinus" aria-label="Decrease">−</button><span id="qVal">1</span><button id="qPlus" aria-label="Increase">+</button></div>
+                <button class="btn solid magnetic" id="addBtn">Add to Bag <span class="ar">→</span></button>
+            </div>
+            <button class="btn magnetic reveal" id="buyNow">Buy It Now</button>
+
+            <div class="assurances reveal">
+                <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg> 240 GSM heavyweight cotton · oversized fit</div>
+                <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg> Free shipping over ₹2,499 · easy 7-day returns</div>
+                <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l7 4v5c0 5-3 7-7 9-4-2-7-4-7-9V7z" stroke-linejoin="round"/></svg> Limited drop · never restocked</div>
+            </div>
+
+            <div class="acc" id="acc">
+                <div class="acc-item open"><button class="acc-head">Description <span class="pm">+</span></button><div class="acc-body"><p>A wearable manifesto. The Power of Love tee carries the full statement — "when the power of love overcomes the love of power, the world will know peace" — printed large across an oversized, heavyweight silhouette built to be lived in and read from across the room.</p></div></div>
+                <div class="acc-item"><button class="acc-head">Fabric &amp; Fit <span class="pm">+</span></button><div class="acc-body"><p>240 GSM combed cotton. Boxy oversized cut with dropped shoulders and a ribbed crew neck. Model is 6'1" wearing size L. For a closer fit, size down.</p></div></div>
+                <div class="acc-item"><button class="acc-head">Shipping &amp; Returns <span class="pm">+</span></button><div class="acc-body"><p>Dispatched within 48 hours. Free shipping on orders over ₹2,499. Unworn items can be returned within 7 days of delivery for a full refund.</p></div></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PRINT BAND -->
+    <section class="band">
+        <div class="wrap">
+            <span class="eyebrow reveal">The Print</span>
+            <h2 class="split">Worn out loud.</h2>
+            <p class="reveal">This isn't a graphic. It's a position. Every letter is set to be read — a manifesto you wear into rooms that were never built for you.</p>
+        </div>
+    </section>
+
+    <!-- SPECS -->
+    <section class="specs">
+        <div class="spec"><div class="n" data-count="240">0</div><div class="l">GSM Cotton</div></div>
+        <div class="spec"><div class="n" data-count="360">0</div><div class="l">Degree view</div></div>
+        <div class="spec"><div class="n" data-count="7">0</div><div class="l">Day returns</div></div>
+        <div class="spec"><div class="n" data-count="100">0</div><div class="l">% Statement</div></div>
+    </section>
+
+    <!-- RELATED -->
+    <section class="rel wrap">
+        <h2 class="split">Complete the statement</h2>
+        <div class="p-grid">
+            <a class="card reveal" href="product.html"><div class="thumb2 white"><div class="tp2"><span class="s">When the</span><span class="b">POWER</span><span class="s">of love overcomes</span><span class="b">POWER</span><span class="s">will know</span><span class="sf">Peace</span></div></div><div class="card-meta"><div class="nm">Power of Love Tee · White</div><div class="pr">₹1,499.00</div></div></a>
+            <a class="card reveal" href="product.html"><div class="thumb2 black"><svg style="width:88px" viewBox="0 0 200 130" fill="none"><path d="M92 46 C70 40 48 40 30 48 C48 50 62 54 74 62 C56 58 40 60 26 66 C44 68 58 72 70 80 C54 78 40 82 30 88 C50 88 68 86 88 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M108 46 C130 40 152 40 170 48 C152 50 138 54 126 62 C144 58 160 60 174 66 C156 68 142 72 130 80 C146 78 160 82 170 88 C150 88 132 86 112 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 14 L100 108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M88 40 L112 40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><text x="100" y="72" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="38" fill="currentColor">BB</text></svg></div><div class="card-meta"><div class="nm">BB Wings Tee · Black</div><div class="pr">₹1,399.00</div></div></a>
+            <a class="card reveal" href="product.html"><div class="thumb2 white"><svg style="width:88px" viewBox="0 0 200 130" fill="none"><path d="M92 46 C70 40 48 40 30 48 C48 50 62 54 74 62 C56 58 40 60 26 66 C44 68 58 72 70 80 C54 78 40 82 30 88 C50 88 68 86 88 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M108 46 C130 40 152 40 170 48 C152 50 138 54 126 62 C144 58 160 60 174 66 C156 68 142 72 130 80 C146 78 160 82 170 88 C150 88 132 86 112 78" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M100 14 L100 108" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M88 40 L112 40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><text x="100" y="72" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="38" fill="currentColor">BB</text></svg></div><div class="card-meta"><div class="nm">BB Wings Tee · White</div><div class="pr">₹1,399.00</div></div></a>
+            <a class="card reveal" href="product.html"><div class="thumb2 black"><div class="tp2"><span class="b">CHAOS</span><span class="s">raw thoughts</span><span class="sf">Order</span></div></div><div class="card-meta"><div class="nm">Chaos / Order Tee · Black</div><div class="pr">₹1,499.00</div></div></a>
+        </div>
+    </section>
+
+    <footer class="site">
+        <div class="wrap foot-bottom">
+            <a href="index.html" class="foot-logo">BLANCO BLACK</a>
+            <span>© 2025 Blanco Black. Raw thoughts. Pure expressions.</span>
+        </div>
+    </footer>
+
+    <!-- STICKY BUY BAR -->
+    <div class="buybar" id="buybar">
+        <div class="wrap">
+            <div class="bb-l"><span class="bb-nm" id="bbNm">Power of Love Tee · Black</span><span class="bb-pr">₹1,499.00</span></div>
+            <button class="btn solid" id="bbAdd">Add to Bag <span class="ar">→</span></button>
+        </div>
+    </div>
+
+    <script>
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.getElementById('vWorn').style.backgroundImage = 'url("assets/banner.jpg")';
+        document.getElementById('thWorn').style.backgroundImage = 'url("assets/banner.jpg")';
+
+        /* ---- Gallery view switching ---- */
+        const views = { v360: document.getElementById('v360'), vPrint: document.getElementById('vPrint'), vWorn: document.getElementById('vWorn') };
+        document.querySelectorAll('.thumb').forEach(t => t.addEventListener('click', () => {
+            document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
+            t.classList.add('active');
+            Object.values(views).forEach(v => v.classList.remove('active'));
+            views[t.dataset.view].classList.add('active');
+        }));
+
+        /* ---- Colour swatch ---- */
+        const state = { color: 'black', size: null, qty: 1 };
+        document.querySelectorAll('.swatch').forEach(s => s.addEventListener('click', () => {
+            document.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+            s.classList.add('active'); state.color = s.dataset.col;
+            const isW = state.color === 'white';
+            document.getElementById('colName').textContent = isW ? 'White' : 'Black';
+            document.getElementById('vPrint').classList.toggle('white', isW);
+            document.querySelector('.thumb.tb').classList.toggle('tw', isW);
+            document.getElementById('bbNm').textContent = 'Power of Love Tee · ' + (isW ? 'White' : 'Black');
+        }));
+
+        /* ---- Size + qty ---- */
+        document.querySelectorAll('.size:not(.oos)').forEach(b => b.addEventListener('click', () => {
+            document.querySelectorAll('.size').forEach(x => x.classList.remove('active')); b.classList.add('active'); state.size = b.textContent;
+        }));
+        const qVal = document.getElementById('qVal');
+        document.getElementById('qPlus').addEventListener('click', () => { state.qty++; qVal.textContent = state.qty; });
+        document.getElementById('qMinus').addEventListener('click', () => { if (state.qty > 1) { state.qty--; qVal.textContent = state.qty; } });
+
+        /* ---- Add to bag ---- */
+        let cart = 0; const cartC = document.getElementById('cartC'), toast = document.getElementById('toast');
+        function addToBag() {
+            if (!state.size) { showToast('Select a size first'); return; }
+            cart += state.qty; cartC.textContent = cart;
+            showToast(`Added ${state.qty} · Size ${state.size}`);
+        }
+        let toastT; function showToast(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('show'), 2200); }
+        document.getElementById('addBtn').addEventListener('click', addToBag);
+        document.getElementById('bbAdd').addEventListener('click', addToBag);
+        document.getElementById('buyNow').addEventListener('click', () => showToast('Redirecting to checkout…'));
+
+        /* ---- Accordion ---- */
+        document.querySelectorAll('.acc-head').forEach(h => h.addEventListener('click', () => {
+            const item = h.parentElement, body = h.nextElementSibling, isOpen = item.classList.contains('open');
+            document.querySelectorAll('.acc-item').forEach(i => { i.classList.remove('open'); i.querySelector('.acc-body').style.maxHeight = null; });
+            if (!isOpen) { item.classList.add('open'); body.style.maxHeight = body.scrollHeight + 'px'; }
+        }));
+        // open the first by default
+        const first = document.querySelector('.acc-item.open .acc-body'); if (first) first.style.maxHeight = first.scrollHeight + 'px';
+
+        /* ---- Split headings ---- */
+        function splitWords(el) {
+            const parts = el.innerHTML.replace(/<br\s*\/?>/g, ' <br> ').split(/\s+/);
+            el.innerHTML = parts.map(p => p === '<br>' ? '<br>' : `<span class="w"><span class="wi">${p}</span></span>`).join(' ');
+            return el.querySelectorAll('.wi');
+        }
+
+        function initScroll() {
+            gsap.registerPlugin(ScrollTrigger);
+            gsap.to('#prog', { width: '100%', ease: 'none', scrollTrigger: { start: 0, end: () => document.body.scrollHeight - innerHeight, scrub: .3 } });
+
+            gsap.utils.toArray('.split').forEach(h => {
+                const wis = splitWords(h);
+                gsap.to(wis, { y: 0, duration: 1, stagger: .06, ease: 'power4.out', scrollTrigger: { trigger: h, start: 'top 88%' } });
+            });
+
+            gsap.set('.reveal', { y: 38, opacity: 0 });
+            ScrollTrigger.batch('.reveal', { start: 'top 90%', onEnter: b => gsap.to(b, { y: 0, opacity: 1, duration: .9, stagger: .08, ease: 'power3.out', overwrite: true }) });
+
+            // counters
+            gsap.utils.toArray('[data-count]').forEach(el => {
+                const end = +el.dataset.count, obj = { v: 0 };
+                ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true, onEnter: () => gsap.to(obj, { v: end, duration: 1.6, ease: 'power2.out', onUpdate: () => el.textContent = Math.round(obj.v) }) });
+            });
+
+            // sticky buy bar appears once main add-to-bag is scrolled away
+            ScrollTrigger.create({ trigger: '#addBtn', start: 'bottom top', endTrigger: 'footer', end: 'top bottom',
+                onToggle: self => document.getElementById('buybar').classList.toggle('show', self.isActive) });
+        }
+        if (window.gsap && window.ScrollTrigger) initScroll();
+        else addEventListener('load', () => { if (window.gsap && window.ScrollTrigger) initScroll(); });
+
+        /* magnetic buttons */
+        if (!reduce) document.querySelectorAll('.magnetic').forEach(b => {
+            b.addEventListener('mousemove', e => { const r = b.getBoundingClientRect(); gsap.to(b, { x: (e.clientX - r.left - r.width/2) * .3, y: (e.clientY - r.top - r.height/2) * .4, duration: .4 }); });
+            b.addEventListener('mouseleave', () => gsap.to(b, { x: 0, y: 0, duration: .5, ease: 'elastic.out(1,.4)' }));
+        });
+
+        /* 360 turntable (drag + white key) */
+        (function () {
+            const stage = document.getElementById('v360'), video = document.getElementById('turntable');
+            const canvas = document.getElementById('turnCanvas'), kctx = canvas.getContext('2d', { willReadFrequently: true });
+            const KW = 800, KH = 450, HI = 242, LO = 202; canvas.width = KW; canvas.height = KH; let keyFailed = false;
+            function keyFrame() {
+                if (keyFailed || video.readyState < 2) return;
+                try { kctx.drawImage(video, 0, 0, KW, KH); const f = kctx.getImageData(0, 0, KW, KH), d = f.data;
+                    for (let k = 0; k < d.length; k += 4) { const m = Math.min(d[k], d[k+1], d[k+2]); if (m >= HI) d[k+3] = 0; else if (m > LO) d[k+3] = Math.round(255 * (HI - m) / (HI - LO)); }
+                    kctx.putImageData(f, 0, 0);
+                } catch (e) { keyFailed = true; canvas.style.display = 'none'; video.style.opacity = '1'; video.style.mixBlendMode = 'multiply'; }
+            }
+            (function loop(){ keyFrame(); requestAnimationFrame(loop); })();
+            if (reduce) { video.removeAttribute('autoplay'); video.pause(); }
+            let dragging = false, lastX = 0, wasPlaying = true;
+            function seekBy(dx){ const dur = video.duration || 10, w = stage.clientWidth || 1; let t = video.currentTime - (dx/w)*dur; video.currentTime = ((t % dur) + dur) % dur; }
+            stage.addEventListener('pointerdown', e => { dragging = true; lastX = e.clientX; wasPlaying = !video.paused; video.pause(); stage.classList.add('dragging','touched'); stage.setPointerCapture(e.pointerId); });
+            stage.addEventListener('pointermove', e => { if (dragging) { seekBy(e.clientX - lastX); lastX = e.clientX; } });
+            function end(e){ if (!dragging) return; dragging = false; stage.classList.remove('dragging'); try { stage.releasePointerCapture(e.pointerId); } catch(_){} if (wasPlaying && !reduce) video.play().catch(()=>{}); }
+            stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
+        })();
+    </script>
+</body>
+</html>
