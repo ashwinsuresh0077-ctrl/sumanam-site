@@ -1,16 +1,42 @@
-# React + Vite
+# MEP · BIM · PMS Consultancy — 3D Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-style, truly 3D marketing site for an MEP / BIM / PMS engineering
+consultancy. The hero features a procedurally generated high-rise rendered with
+**Three.js / React Three Fiber**, showing the building's mechanical, electrical
+and plumbing (MEP) service risers threading up a glass tower behind a cyan BIM
+wireframe cage, surrounded by floating glassmorphism dashboard panels.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Vite + React 19** — app shell and build
+- **Three.js + @react-three/fiber + @react-three/drei** — the real-time 3D hero scene
+- **GSAP** — hero intro timeline animation
+- **Framer Motion** — scroll-reveal and micro-interactions
+- **Tailwind CSS v4** — styling / dark-blue neon theme
 
-## React Compiler
+## The 3D hero (`src/components/HeroScene.jsx`)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Everything in the scene is generated in code — no external GLB asset required:
 
-## Expanding the ESLint configuration
+- A 9-floor glazed tower (glass curtain wall, structural slabs, corner columns, mullions)
+- Rooftop mechanical plant (air-handling units, cooling towers, neon spire)
+- Colour-coded MEP service risers with animated energy pulses
+  (HVAC, chilled water, fire, electrical, plumbing)
+- Horizontal duct runs and a pulsing cyan BIM wireframe cage
+- Manual studio lighting + contact shadows + drifting data motes
+- Slow auto-rotation with constrained OrbitControls
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Sections
+
+Navbar · Hero (3D + dashboard panels) · Stats · Services · About / Why Choose Us ·
+Projects carousel · Technology · Process · Contact · Footer
+
+## Scripts
+
+```bash
+npm install     # install dependencies
+npm run dev     # start the dev server
+npm run build   # production build
+npm run preview # preview the production build
+npm run lint    # eslint
+```

@@ -1,18 +1,93 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #0a1628;
-  --color-navy-light: #132338;
-  --color-gold: #c9a14a;
-  --color-gold-light: #e3c878;
+  --color-base: #050a16;
+  --color-base-2: #0a1120;
+  --color-panel: #0c1526;
+  --color-ink: #7d93b5;
+  --color-cyan: #22d3ee;
+  --color-cyan-bright: #38e5ff;
+  --color-brand: #2f7dff;
+  --color-brand-deep: #1656d6;
+
+  --font-display: 'Sora', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
 }
 
 * {
   scroll-behavior: smooth;
 }
 
+html,
 body {
+  background-color: #050a16;
+  color: #eaf2ff;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #060d18;
-  color: #f4f4f4;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Neon gradient text used for the accent word */
+.text-gradient {
+  background: linear-gradient(120deg, #38e5ff 0%, #2f7dff 55%, #1656d6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Faint blueprint grid backdrop */
+.blueprint {
+  background-image:
+    linear-gradient(rgba(47, 125, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47, 125, 255, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Glass panel used across dashboard cards */
+.glass {
+  background: rgba(12, 21, 38, 0.55);
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-hover {
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-hover:hover {
+  border-color: rgba(56, 229, 255, 0.55);
+  box-shadow: 0 0 40px -12px rgba(47, 125, 255, 0.5);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #050a16;
+}
+::-webkit-scrollbar-thumb {
+  background: #16233c;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1f3157;
+}
+
+/* Marquee for tech / clients */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+
+/* Slow pulse for neon accents */
+@keyframes neonPulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.animate-neon {
+  animation: neonPulse 2.6s ease-in-out infinite;
 }

@@ -1,89 +1,131 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-
-const categories = ['All', 'Residential', 'Hospitality', 'Healthcare', 'Commercial', 'IT Parks']
+import { useState, useRef } from 'react'
+import { motion } from 'framer-motion'
+import { ArrowRight, ArrowLeft } from 'lucide-react'
 
 const projects = [
-  { name: 'Palmera Garden', location: 'Thoraipakkam, Chennai', category: 'Residential', color: '#1f3a5f' },
-  { name: 'Balusseri Taluk Hospital', location: 'Kozhikode', category: 'Healthcare', color: '#2d4a3e' },
-  { name: 'Hotel New Victoria', location: 'Kerala', category: 'Hospitality', color: '#4a3a2d' },
-  { name: 'Bhavani Tech Park', location: 'Technopark, Thiruvananthapuram', category: 'IT Parks', color: '#33415c' },
-  { name: 'Rubics Square', location: 'Commercial Hub', category: 'Commercial', color: '#5c3344' },
-  { name: 'Arakkal Apartments', location: 'Thevara, Kochi', category: 'Residential', color: '#3d4a2d' },
-  { name: 'Leela IT Park', location: 'Leela Group', category: 'IT Parks', color: '#2d3a4a' },
-  { name: 'Four Points Sheraton', location: 'Hospitality', category: 'Hospitality', color: '#4a2d3d' },
-  { name: 'Sidharth Natura', location: 'Premium Living', category: 'Residential', color: '#2d4a4a' },
+  { name: 'Commercial Complex', tags: 'MEP Design · BIM · PMS', hue: 210 },
+  { name: 'Multi Speciality Hospital', tags: 'MEP Design · BIM Coordination · PMS', hue: 190 },
+  { name: 'Industrial Plant', tags: 'MEP Design · 3D BIM · Estimation', hue: 25 },
+  { name: 'International Airport', tags: 'BIM Coordination · PMS', hue: 220 },
+  { name: 'High Rise Residential', tags: 'MEP Design · BIM · PMS', hue: 260 },
+  { name: 'IT Business Park', tags: 'MEP Design · BIM · Estimation', hue: 200 },
 ]
 
-export default function Projects() {
-  const [active, setActive] = useState('All')
+/* A stylised building illustration built from CSS gradients per card */
+function ProjectVisual({ hue }) {
+  return (
+    <div
+      className="absolute inset-0"
+      style={{
+        background: `radial-gradient(130% 100% at 50% 0%, hsl(${hue} 55% 28%) 0%, hsl(${hue} 60% 12%) 55%, #050c18 100%)`,
+      }}
+    >
+      <div className="absolute inset-0 blueprint opacity-30" />
+      <div className="absolute bottom-0 left-0 right-0 flex items-end justify-center gap-1 px-5">
+        {[52, 78, 64, 92, 70, 84, 58].map((h, i) => (
+          <div
+            key={i}
+            className="flex-1 rounded-t-sm opacity-85"
+            style={{
+              height: `${h}%`,
+              background: `linear-gradient(180deg, hsl(${hue} 45% 42%), hsl(${hue} 50% 16%))`,
+              boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.05)',
+            }}
+          />
+        ))}
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-base via-transparent to-transparent" />
+    </div>
+  )
+}
 
-  const filtered = active === 'All' ? projects : projects.filter((p) => p.category === active)
+export default function Projects() {
+  const trackRef = useRef(null)
+  const [i, setI] = useState(0)
+
+  const scrollBy = (dir) => {
+    const el = trackRef.current
+    if (!el) return
+    const amount = el.clientWidth * 0.8 * dir
+    el.scrollBy({ left: amount, behavior: 'smooth' })
+    setI((p) => Math.max(0, Math.min(projects.length - 1, p + dir)))
+  }
 
   return (
-    <section id="projects" className="relative py-28 px-6 bg-[#060d18]">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6"
+    <section id="projects" className="relative py-24 px-6 bg-base">
+      <div className="max-w-[1400px] mx-auto">
+        <div className="flex items-end justify-between mb-10 gap-4">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl md:text-4xl font-bold text-white font-display"
+          >
+            Our Projects
+          </motion.h2>
+          <a
+            href="#contact"
+            className="hidden sm:inline-flex items-center gap-2 text-cyan-bright text-xs uppercase tracking-widest hover:gap-3 transition-all"
+          >
+            View All Projects <ArrowRight size={14} />
+          </a>
+        </div>
+
+        <div
+          ref={trackRef}
+          className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-2 px-2 scrollbar-none"
+          style={{ scrollbarWidth: 'none' }}
         >
-          <div>
-            <p className="text-gold uppercase tracking-[0.3em] text-sm mb-3">Our Work</p>
-            <h2 className="text-3xl md:text-5xl font-semibold text-white max-w-xl">
-              Spaces That Redefine Modern Living
-            </h2>
-          </div>
+          {projects.map((p, idx) => (
+            <motion.article
+              key={p.name}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.05 }}
+              className="group relative snap-start shrink-0 w-[280px] sm:w-[300px] h-[340px] rounded-2xl overflow-hidden border border-cyan/12 glass-hover cursor-pointer"
+            >
+              <ProjectVisual hue={p.hue} />
+              <div className="absolute bottom-0 left-0 right-0 p-5 flex items-end justify-between gap-3">
+                <div>
+                  <h3 className="text-white font-semibold text-lg leading-tight">{p.name}</h3>
+                  <p className="text-cyan/70 text-[11px] tracking-wide mt-1">{p.tags}</p>
+                </div>
+                <span className="w-9 h-9 rounded-full border border-cyan/40 flex items-center justify-center text-cyan-bright shrink-0 group-hover:bg-cyan group-hover:text-[#03101f] transition-all">
+                  <ArrowRight size={15} />
+                </span>
+              </div>
+            </motion.article>
+          ))}
+        </div>
 
-          <div className="flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <button
-                key={c}
-                onClick={() => setActive(c)}
-                className={`px-4 py-2 text-xs uppercase tracking-widest border transition-all ${
-                  active === c
-                    ? 'border-gold text-gold bg-gold/10'
-                    : 'border-white/10 text-white/50 hover:border-white/30 hover:text-white'
+        {/* controls + dots */}
+        <div className="flex items-center justify-center gap-6 mt-8">
+          <button
+            onClick={() => scrollBy(-1)}
+            className="w-10 h-10 rounded-full border border-cyan/25 flex items-center justify-center text-white/70 hover:text-cyan-bright hover:border-cyan transition-all"
+            aria-label="Previous"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <div className="flex gap-2">
+            {projects.map((_, idx) => (
+              <span
+                key={idx}
+                className={`h-1.5 rounded-full transition-all ${
+                  idx === i ? 'w-6 bg-cyan-bright' : 'w-1.5 bg-white/20'
                 }`}
-              >
-                {c}
-              </button>
+              />
             ))}
           </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((p, i) => (
-              <motion.div
-                key={p.name}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4, delay: i * 0.04 }}
-                whileHover={{ y: -8 }}
-                className="group relative h-72 overflow-hidden border border-white/10 cursor-pointer"
-                style={{ background: `linear-gradient(135deg, ${p.color}, #060d18)` }}
-              >
-                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500">
-                  <div className="w-24 h-24 border-2 border-gold rotate-45" />
-                </div>
-
-                <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-[#060d18] to-transparent">
-                  <p className="text-gold text-xs uppercase tracking-widest mb-2">{p.category}</p>
-                  <h3 className="text-xl font-medium text-white">{p.name}</h3>
-                  <p className="text-white/50 text-sm mt-1">{p.location}</p>
-                </div>
-
-                <div className="absolute top-6 right-6 w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/50 opacity-0 group-hover:opacity-100 group-hover:border-gold group-hover:text-gold transition-all duration-300">
-                  &#8599;
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          <button
+            onClick={() => scrollBy(1)}
+            className="w-10 h-10 rounded-full border border-cyan/25 flex items-center justify-center text-white/70 hover:text-cyan-bright hover:border-cyan transition-all"
+            aria-label="Next"
+          >
+            <ArrowRight size={16} />
+          </button>
         </div>
       </div>
     </section>
