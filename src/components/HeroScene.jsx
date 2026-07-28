@@ -274,7 +274,7 @@ function Particles() {
 export default function HeroScene() {
   return (
     <Canvas
-      shadows
+      shadows="percentage"
       camera={{ position: [6.5, 3.5, 7.5], fov: 42 }}
       dpr={[1, 1.8]}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
