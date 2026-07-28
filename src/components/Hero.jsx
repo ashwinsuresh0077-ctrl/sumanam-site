@@ -35,8 +35,8 @@ export default function Hero() {
       </div>
 
       {/* readability gradients */}
-      <div className="absolute inset-0 bg-gradient-to-r from-base via-base/70 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-base via-transparent to-base/40" />
+      <div className="absolute inset-0 bg-gradient-to-r from-base via-base/55 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-base/90 via-transparent to-base/30" />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 h-full">
         <div className="flex items-start justify-between gap-8">
