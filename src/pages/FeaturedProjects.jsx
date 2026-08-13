@@ -101,7 +101,11 @@ export default function FeaturedProjects() {
                 </div>
                 <div className="relative p-6">
                   <p className="text-xs uppercase tracking-widest text-gold mb-1.5">{p.category}</p>
-                  <h3 className="text-xl font-semibold text-white drop-shadow leading-tight">{p.title}</h3>
+                  {/* h2, not h3: these cards sit directly under the page h1, and
+                      the skipped level made heading navigation jump a rung for
+                      screen-reader users. Styling is utility-class driven, so
+                      the level carries no visual weight. */}
+                  <h2 className="text-xl font-semibold text-white drop-shadow leading-tight">{p.title}</h2>
                   {p.location && (
                     <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-white/70">
                       <MapPin size={14} /> {p.location}
