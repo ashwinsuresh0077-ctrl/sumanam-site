@@ -10,6 +10,7 @@ const ServiceDetail = lazy(() => import('./pages/ServiceDetail'))
 const WorkDetail = lazy(() => import('./pages/WorkDetail'))
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail'))
 const FeaturedProjects = lazy(() => import('./pages/FeaturedProjects'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 // Matches the page background so a route swap reads as a beat, not a flash.
 function RouteFallback() {
@@ -27,6 +28,8 @@ function App() {
           <Route path="/work/:slug" element={<WorkDetail />} />
           <Route path="/projects" element={<FeaturedProjects />} />
           <Route path="/project/:slug" element={<ProjectDetail />} />
+          {/* Catch-all — without it an unmatched URL renders nothing at all. */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </>
