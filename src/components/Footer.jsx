@@ -1,3 +1,7 @@
+import { Mail, Phone, MapPin } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { services } from '../data/services'
+
 const socials = [
   {
     name: 'Facebook',
@@ -11,40 +15,104 @@ const socials = [
     name: 'X',
     path: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
   },
-  {
-    name: 'RSS',
-    path: 'M4 4a16 16 0 0 1 16 16h-3a13 13 0 0 0-13-13V4zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7v-3zm2 7a3 3 0 1 1 0 6 3 3 0 0 1 0-6z',
-  },
+]
+
+const companyLinks = [
+  { name: 'About', href: '/#about' },
+  { name: 'Projects', href: '/#projects' },
+  { name: 'Clients', href: '/#clients' },
+  { name: 'Contact', href: '/#contact' },
 ]
 
 export default function Footer() {
   return (
-    <footer className="bg-[#040a14] border-t border-white/5 px-6 py-10">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 border border-gold rotate-45 flex items-center justify-center">
-            <div className="w-3 h-3 bg-gold -rotate-45" />
+    <footer className="bg-bg-deep border-t border-ink/5 pt-16 pb-8 px-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
+          {/* Brand */}
+          <div className="space-y-5">
+            <Link to="/#home" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 border border-gold rotate-45 flex items-center justify-center">
+                <div className="w-3.5 h-3.5 bg-gold -rotate-45" />
+              </div>
+              <span className="text-ink font-semibold tracking-[0.2em]">SUMANAM</span>
+            </Link>
+            <p className="text-ink/65 text-sm leading-relaxed max-w-xs">
+              Integrated MEP, BIM and project management consultancy delivering across
+              Kerala and Tamil Nadu for over 30 years.
+            </p>
+            <div className="flex items-center gap-3">
+              {socials.map((s) => (
+                <a
+                  key={s.name}
+                  href="#"
+                  aria-label={s.name}
+                  className="w-11 h-11 rounded-lg border border-ink/10 flex items-center justify-center text-ink/65 hover:text-ink hover:border-ink/30 transition-colors"
+                >
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d={s.path} />
+                  </svg>
+                </a>
+              ))}
+            </div>
           </div>
-          <span className="text-white/70 text-sm tracking-[0.2em]">SUMANAM</span>
+
+          {/* Services */}
+          <div>
+            <h3 className="text-ink font-semibold mb-5 text-sm">Services</h3>
+            <ul className="space-y-3 text-sm text-ink/65">
+              {services.map((s) => (
+                <li key={s.slug}>
+                  <Link to={`/services/${s.slug}`} className="hover:text-ink transition-colors">
+                    {s.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h3 className="text-ink font-semibold mb-5 text-sm">Company</h3>
+            <ul className="space-y-3 text-sm text-ink/65">
+              {companyLinks.map((l) => (
+                <li key={l.name}>
+                  <Link to={l.href} className="hover:text-ink transition-colors">{l.name}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Offices */}
+          <div>
+            <h3 className="text-ink font-semibold mb-5 text-sm">Get in Touch</h3>
+            <ul className="space-y-4 text-sm text-ink/65">
+              <li className="flex items-start gap-3">
+                <MapPin className="text-ink/70 shrink-0 mt-0.5" size={16} strokeWidth={1.5} />
+                <span>Aditya Apartment, Kowdiar, Thiruvananthapuram, Kerala 695003</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <MapPin className="text-ink/70 shrink-0 mt-0.5" size={16} strokeWidth={1.5} />
+                <span>Thoraipakkam, Chennai, Tamil Nadu</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="text-ink/70 shrink-0" size={16} strokeWidth={1.5} />
+                <a href="tel:+919846150055" className="hover:text-ink transition-colors">+91 98461 50055</a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="text-ink/70 shrink-0" size={16} strokeWidth={1.5} />
+                <a href="mailto:info@sumanam.co.in" className="hover:text-ink transition-colors">info@sumanam.co.in</a>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <p className="text-white/30 text-sm text-center">
-          &copy; {new Date().getFullYear()} Sumanam Engineering Services Pvt Ltd. All rights reserved.
-        </p>
-
-        <div className="flex items-center gap-4 text-white/40">
-          {socials.map((s) => (
-            <svg
-              key={s.name}
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              fill="currentColor"
-              className="hover:text-gold transition-colors cursor-pointer"
-            >
-              <path d={s.path} />
-            </svg>
-          ))}
+        <div className="border-t border-ink/5 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-ink/65">
+          <p>&copy; {new Date().getFullYear()} Sumanam Engineering Services (P) Ltd. All rights reserved.</p>
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-ink transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-ink transition-colors">Terms of Service</a>
+          </div>
         </div>
       </div>
     </footer>

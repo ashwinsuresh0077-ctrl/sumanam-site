@@ -1,90 +1,171 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
+import { ArrowRight, ArrowUpRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { projectImages } from '../data/projectImages'
+import { Reveal } from '../lib/motion'
 
-const categories = ['All', 'Residential', 'Hospitality', 'Healthcare', 'Commercial', 'IT Parks']
-
-const projects = [
-  { name: 'Palmera Garden', location: 'Thoraipakkam, Chennai', category: 'Residential', color: '#1f3a5f' },
-  { name: 'Balusseri Taluk Hospital', location: 'Kozhikode', category: 'Healthcare', color: '#2d4a3e' },
-  { name: 'Hotel New Victoria', location: 'Kerala', category: 'Hospitality', color: '#4a3a2d' },
-  { name: 'Bhavani Tech Park', location: 'Technopark, Thiruvananthapuram', category: 'IT Parks', color: '#33415c' },
-  { name: 'Rubics Square', location: 'Commercial Hub', category: 'Commercial', color: '#5c3344' },
-  { name: 'Arakkal Apartments', location: 'Thevara, Kochi', category: 'Residential', color: '#3d4a2d' },
-  { name: 'Leela IT Park', location: 'Leela Group', category: 'IT Parks', color: '#2d3a4a' },
-  { name: 'Four Points Sheraton', location: 'Hospitality', category: 'Hospitality', color: '#4a2d3d' },
-  { name: 'Sidharth Natura', location: 'Premium Living', category: 'Residential', color: '#2d4a4a' },
+// Three real case studies, declared locally on purpose.
+//
+// Importing `featuredProjects` from data/projects.js would be tidier, but it
+// drags projects.js (81 KB) + projectRecords.js (90 KB) into the landing
+// bundle — App.jsx deliberately code-splits that ~600-project dataset so a
+// first-time visitor never downloads it. projectImages.js is 12 KB and holds
+// only paths, so the cards read their photography from there and carry their
+// own three lines of copy.
+const CARDS = [
+  {
+    slug: 'carnival-infopark-cochin',
+    title: 'Carnival Infopark',
+    category: 'IT Park · Cochin',
+  },
+  {
+    slug: 'annai-hospital-tiruchengode',
+    title: 'Annai Hospital',
+    category: 'Healthcare · Tiruchengode',
+  },
+  {
+    slug: '110-kv-substation-technopark',
+    title: '110 KV Substation',
+    category: 'Industrial · Technopark',
+  },
 ]
+  .map((c) => ({ ...c, gallery: projectImages[c.slug]?.gallery }))
+  .filter((c) => c.gallery && c.gallery.length >= 3)
 
-export default function Projects() {
-  const [active, setActive] = useState('All')
-
-  const filtered = active === 'All' ? projects : projects.filter((p) => p.category === active)
+function ProjectCard({ project, index, total, progress }) {
+  const reduce = useReducedMotion()
+  // Each card shrinks as the ones after it slide over the top, so the stack
+  // reads as depth rather than a pile. The last card never scales.
+  const targetScale = 1 - (total - 1 - index) * 0.03
+  const scale = useTransform(progress, [index / total, 1], [1, targetScale])
 
   return (
-    <section id="projects" className="relative py-28 px-6 bg-[#060d18]">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6"
-        >
-          <div>
-            <p className="text-gold uppercase tracking-[0.3em] text-sm mb-3">Our Work</p>
-            <h2 className="text-3xl md:text-5xl font-semibold text-white max-w-xl">
-              Spaces That Redefine Modern Living
-            </h2>
+    <div className="sticky top-24 flex justify-center md:top-32" style={{ height: '85vh' }}>
+      <motion.article
+        className="w-full overflow-hidden rounded-[40px] border-2 bg-bg p-4 sm:rounded-[50px] sm:p-6 md:rounded-[60px] md:p-8"
+        style={{
+          borderColor: 'color-mix(in srgb, var(--color-ink) 25%, transparent)',
+          top: `${index * 28}px`,
+          ...(reduce ? {} : { scale }),
+        }}
+      >
+        {/* Top row — index, meta, CTA */}
+        <div className="mb-5 flex flex-wrap items-start justify-between gap-4 px-2 sm:mb-7 sm:px-4">
+          <div className="flex items-start gap-4 sm:gap-6">
+            <span
+              className="font-black leading-none text-ink"
+              style={{ fontSize: 'clamp(2.5rem, 8vw, 110px)', opacity: 0.16 }}
+            >
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <div className="pt-1 sm:pt-3">
+              <p className="mb-1 eyebrow" style={{ fontSize: 'clamp(0.65rem, 1vw, 0.8rem)' }}>
+                {project.category}
+              </p>
+              <h3
+                className="font-medium uppercase leading-tight text-ink"
+                style={{ fontSize: 'clamp(1.05rem, 2.2vw, 2rem)' }}
+              >
+                {project.title}
+              </h3>
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <button
-                key={c}
-                onClick={() => setActive(c)}
-                className={`px-4 py-2 text-xs uppercase tracking-widest border transition-all ${
-                  active === c
-                    ? 'border-gold text-gold bg-gold/10'
-                    : 'border-white/10 text-white/50 hover:border-white/30 hover:text-white'
-                }`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((p, i) => (
-              <motion.div
-                key={p.name}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4, delay: i * 0.04 }}
-                whileHover={{ y: -8 }}
-                className="group relative h-72 overflow-hidden border border-white/10 cursor-pointer"
-                style={{ background: `linear-gradient(135deg, ${p.color}, #060d18)` }}
-              >
-                <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 group-hover:scale-110 transition-all duration-500">
-                  <div className="w-24 h-24 border-2 border-gold rotate-45" />
-                </div>
-
-                <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-[#060d18] to-transparent">
-                  <p className="text-gold text-xs uppercase tracking-widest mb-2">{p.category}</p>
-                  <h3 className="text-xl font-medium text-white">{p.name}</h3>
-                  <p className="text-white/50 text-sm mt-1">{p.location}</p>
-                </div>
-
-                <div className="absolute top-6 right-6 w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/50 opacity-0 group-hover:opacity-100 group-hover:border-gold group-hover:text-gold transition-all duration-300">
-                  &#8599;
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          <Link
+            to={`/project/${project.slug}`}
+            className="inline-flex shrink-0 items-center gap-2 rounded-lg border-2 px-6 py-2.5 text-xs font-medium uppercase tracking-widest text-ink transition-colors hover:bg-ink/10 sm:px-8 sm:py-3 sm:text-sm"
+            style={{ borderColor: 'color-mix(in srgb, var(--color-ink) 30%, transparent)' }}
+          >
+            View Project <ArrowUpRight size={15} />
+          </Link>
         </div>
+
+        {/* Bottom row — 40 / 60 image grid */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
+          <div className="flex flex-col gap-3 sm:col-span-2">
+            <img
+              src={project.gallery[0]}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              className="w-full rounded-[32px] object-cover sm:rounded-[40px] md:rounded-[50px]"
+              style={{ height: 'clamp(130px, 16vw, 230px)' }}
+            />
+            <img
+              src={project.gallery[1]}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              className="w-full rounded-[32px] object-cover sm:rounded-[40px] md:rounded-[50px]"
+              style={{ height: 'clamp(160px, 22vw, 340px)' }}
+            />
+          </div>
+          <div className="sm:col-span-3">
+            <img
+              src={project.gallery[2]}
+              alt={project.title}
+              loading="lazy"
+              className="h-full w-full rounded-[32px] object-cover sm:rounded-[40px] md:rounded-[50px]"
+              style={{ minHeight: 'clamp(200px, 40vw, 585px)' }}
+            />
+          </div>
+        </div>
+      </motion.article>
+    </div>
+  )
+}
+
+export default function Projects() {
+  const ref = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end end'],
+  })
+
+  return (
+    <section
+      id="projects"
+      // Pulled up over the light Services band with matching rounded corners,
+      // so the dark panel visibly overlaps it.
+      className="relative z-10 -mt-10 rounded-t-[40px] bg-bg px-5 pt-20 pb-10 sm:-mt-12 sm:rounded-t-[50px] sm:px-8 sm:pt-24 md:-mt-14 md:rounded-t-[60px] md:px-10 md:pt-28"
+    >
+      <div className="mx-auto max-w-6xl">
+        <Reveal className="mb-14 text-center sm:mb-20">
+          <p className="mb-4 eyebrow" style={{ fontSize: 'clamp(0.7rem, 1.1vw, 0.85rem)' }}>
+            Our Work
+          </p>
+          {/* Plain <h2> — see the note in About.jsx: a gradient text fill and
+              per-word transforms are mutually exclusive. */}
+          <h2
+            className="hero-heading font-black uppercase leading-none tracking-tight"
+            style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
+          >
+            Projects
+          </h2>
+        </Reveal>
+
+        <div ref={ref}>
+          {CARDS.map((project, i) => (
+            <ProjectCard
+              key={project.slug}
+              project={project}
+              index={i}
+              total={CARDS.length}
+              progress={scrollYProgress}
+            />
+          ))}
+        </div>
+
+        <Reveal className="pt-10 text-center">
+          <Link
+            to="/projects"
+            className="group inline-flex items-center gap-2 font-medium text-ink/80 transition-all hover:gap-3 hover:text-ink"
+          >
+            View all featured projects
+            <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </Reveal>
       </div>
     </section>
   )

@@ -1,18 +1,163 @@
 @import "tailwindcss";
 
 @theme {
+  /* Tailwind v4 is CSS-first — there is no tailwind.config.js to extend, so
+     the `fontFamily: { sans: [...] }` from the spec is expressed here. Every
+     `font-sans` utility now resolves to Inter. */
+  --font-sans: 'Inter', sans-serif;
+
+  /* Accent — identical in both themes.
+     `gold` is the brand accent, used for fills, borders, icons and large
+     shapes where contrast is not the binding constraint. */
+  --color-gold: #4f86f7;
+  --color-gold-light: #7aa6ff;
   --color-navy: #0a1628;
   --color-navy-light: #132338;
-  --color-gold: #c9a14a;
-  --color-gold-light: #e3c878;
+
+  /* Accessible accent for TEXT. #4f86f7 only reaches 3.19:1 on the light
+     background, which fails WCAG AA (4.5:1) for the small eyebrow labels,
+     counts and inline links this accent is used for. `gold-ink` is the
+     theme-switchable variant that passes in both themes:
+       light  #2563eb on #f4f6fb = 4.78:1
+       dark   #4f86f7 on #060d18 = 5.64:1
+     Use `text-gold-ink` for accent text; keep `text-gold` for icons/fills. */
+  --color-gold-ink: #4f86f7;
+
+  /* Semantic, theme-switchable tokens (defaults = dark theme).
+     These are plain CSS variables, so utilities like `bg-bg`,
+     `text-ink`, `border-ink/10` and inline `var(--color-ink)`
+     all update live when [data-theme] changes. */
+  /* Neutral near-blacks, matched to the hero. The old values carried a navy
+     cast (#060d18 / #0a1628) which read as a visible blue band against the
+     video section — the page and the banner now share one ground. */
+  --color-ink: #ffffff;     /* foreground: text + hairline borders */
+  --color-bg: #0A0B0D;      /* page background */
+  --color-bg-alt: #101216;  /* banded sections / cards */
+  --color-bg-deep: #070809;  /* footer */
 }
 
-* {
+/* Light theme overrides */
+[data-theme="light"] {
+  --color-ink: #0b1b34;
+  --color-bg: #f4f6fb;
+  --color-bg-alt: #ffffff;
+  --color-bg-deep: #e9edf5;
+  /* Darker accent so accent-coloured text clears 4.5:1 on the light surface. */
+  --color-gold-ink: #2563eb;
+}
+
+html {
   scroll-behavior: smooth;
 }
 
+/* Lenis: while smooth scroll is active it owns scrolling, so disable the
+   native smooth behaviour to avoid double-easing. Reduced-motion users
+   never get these classes and keep native smooth anchor scrolling. */
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #060d18;
-  color: #f4f4f4;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* ── Shared with the hero ───────────────────────────────────────────────
+   The banner sets the vocabulary for the whole page: white solid button,
+   glass outline button, and a quiet uppercase eyebrow. Every section uses
+   these rather than inventing its own pill.                             */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;          /* rounded-lg, as in the hero */
+  background: #ffffff;
+  color: #0A0B0D;
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+.btn-primary:hover { background: #f3f4f6; }
+
+.btn-glass {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.btn-glass:hover { background: #ffffff; color: #0A0B0D; }
+
+/* In the light world the same two buttons invert, so the pairing survives
+   the theme toggle instead of turning into white-on-white. */
+[data-theme='light'] .btn-primary { background: var(--color-ink); color: #ffffff; }
+[data-theme='light'] .btn-primary:hover { background: #1f2f4d; }
+[data-theme='light'] .btn-glass { border-color: rgba(11, 27, 52, 0.25); color: var(--color-ink); }
+[data-theme='light'] .btn-glass:hover { background: var(--color-ink); color: #ffffff; }
+
+/* Section eyebrow. The hero's is white, not blue — the accent is spent on
+   one thing per page, not on every label. */
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: clamp(0.68rem, 1vw, 0.8rem);
+  font-weight: 500;
+  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+}
+
+/* Gradient display heading. Ink at the top falling into the brand blue —
+   works in both themes because both stops are theme tokens. */
+.hero-heading {
+  background: linear-gradient(180deg, var(--color-ink) 0%, var(--color-gold) 115%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Liquid glass — the navbar bar, the "Explore Now" button and the tag card.
+   The ::before draws a 1.4px gradient hairline via a mask-composite cutout,
+   so the border brightens at the top and bottom edges and fades at the middle. */
+.liquid-glass {
+  background: rgba(0, 0, 0, 0.4);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 20%,
+    rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+    rgba(255,255,255,0.1) 80%, rgba(255,255,255,0.3) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  /* Standard equivalent alongside the -webkit- form. Without it the cutout
+     never applies in Firefox and the hairline renders as a solid block. */
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
 }
