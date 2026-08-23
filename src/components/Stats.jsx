@@ -1,6 +1,13 @@
-import { useEffect, useState, useRef } from 'react'
+import { lazy, useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Stagger, StaggerItem } from '../lib/motion'
+import ShaderBackdrop from './ShaderBackdrop'
+
+// Lazy at module scope: keeps ThreeUI's 346 KB shader chunk out of the landing
+// bundle, and keeps the component identity stable across renders.
+const TopoField = lazy(() =>
+  import('@designcodeio/threeui/components/TopoField').then((m) => ({ default: m.TopoField })),
+)
 import { workCategories } from '../data/work'
 
 // Derived from data/work.js so these headline numbers can never drift out of
@@ -54,8 +61,13 @@ function Counter({ value, suffix }) {
 
 export default function Stats() {
   return (
-    <section className="relative py-24 px-6 bg-bg-alt border-y border-ink/5">
-      <Stagger className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 text-center" stagger={0.1}>
+    <section className="relative overflow-hidden py-24 px-6 bg-bg-alt border-y border-ink/5">
+      {/* A survey contour grid under the headline numbers — the drawing these
+          figures came out of. Kept faint: at full strength the grid competes
+          with the digits sitting on top of it. */}
+      <ShaderBackdrop as={TopoField} opacity={0.25} speed={0.35} />
+
+      <Stagger className="relative max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 text-center" stagger={0.1}>
         {stats.map((s) => (
           <StaggerItem key={s.label}>
             <motion.div

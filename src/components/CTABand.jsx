@@ -1,10 +1,23 @@
+import { lazy } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { TextReveal, Magnet } from '../lib/motion'
+import ShaderBackdrop from './ShaderBackdrop'
+
+// Lazy at module scope: keeps ThreeUI's 346 KB shader chunk out of the landing
+// bundle, and keeps the component identity stable across renders.
+const ConnectivityGraph = lazy(() =>
+  import('@designcodeio/threeui/components/ConnectivityGraph').then((m) => ({ default: m.ConnectivityGraph })),
+)
 
 export default function CTABand() {
   return (
     <section className="relative px-6 py-24 bg-bg-alt border-y border-ink/5 overflow-hidden">
+      {/* Brand-blue light streaks behind the closing pitch. Held well under
+          full strength and veiled by the scrim below so the headline keeps its
+          contrast in both themes — the shader is atmosphere, not the subject. */}
+      <ShaderBackdrop as={ConnectivityGraph} opacity={0.5} speed={0.55} />
+      <div className="pointer-events-none absolute inset-0 bg-bg-alt/55" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
