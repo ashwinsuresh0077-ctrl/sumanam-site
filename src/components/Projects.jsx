@@ -20,14 +20,14 @@ const CARDS = [
     category: 'IT Park · Cochin',
   },
   {
-    slug: 'annai-hospital-tiruchengode',
-    title: 'Annai Hospital',
-    category: 'Healthcare · Tiruchengode',
+    slug: 'four-points-sheraton-alappuzha',
+    title: 'Four Points by Sheraton',
+    category: 'Hospitality · Alappuzha',
   },
   {
-    slug: '110-kv-substation-technopark',
-    title: '110 KV Substation',
-    category: 'Industrial · Technopark',
+    slug: 'tcs-training-centre-technopark',
+    title: 'TCS Training Centre',
+    category: 'IT Campus · Technopark',
   },
 ]
   .map((c) => ({ ...c, gallery: projectImages[c.slug]?.gallery }))
