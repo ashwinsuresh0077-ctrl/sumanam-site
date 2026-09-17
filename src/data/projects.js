@@ -1125,15 +1125,18 @@ export const sectorProfiles = {
 // Records (no case study) normalized into the same shape the page renders.
 const recordProjects = projectRecords.map((r) => {
   const profile = sectorProfiles[r.categorySlug] || sectorProfiles['commercial-buildings']
+  // Real photography when we have it in public/projects/; themed placeholders otherwise.
+  const real = getImages(r.slug)
   const ids = typeImages[profile.type] || typeImages.commercial
   return {
     ...r,
     kind: 'record',
     category: profile.label,
     type: profile.type,
-    image: img(ids[0]),
-    card: img(ids[0], 900),
-    gallery: ids.map((id) => img(id, 900)),
+    image: real ? real.hero : img(ids[0]),
+    card: real ? real.card : img(ids[0], 900),
+    gallery: real ? real.gallery : ids.map((id) => img(id, 900)),
+    hasRealImages: !!real,
   }
 })
 

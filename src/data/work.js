@@ -602,7 +602,7 @@ export const workCategories = [
     title: 'Auditorium',
     subtitle: 'Performance and assembly halls tuned for acoustics and crowd movement.',
     image: img('photo-1507924538820-ede94a04019d'),
-    count: 14,
+    count: 16,
     sections: [
       {
         heading: 'Government Projects',
@@ -626,6 +626,8 @@ export const workCategories = [
           { project: 'Convention Centre, A/C Trivandrum', client: 'Keerthi & Bhavana' },
           { project: 'ICAI, Auditorium', client: 'M/s ICAI' },
           { project: 'League Office + Auditorium', client: 'IUML' },
+          { project: 'IGS Convention Centre', client: 'IGS Convention Centre' },
+          { project: 'Leela Raviz Convention Centre', client: 'The Leela Raviz' },
         ],
       },
     ],

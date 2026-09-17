@@ -9,6 +9,10 @@
 //
 // Regenerate: scratchpad/collect-images.sh, download-images.sh, enhance.py
 export const projectImages = {
+  "college-auditorium": {"hero":"/projects/college-auditorium/01.webp","card":"/projects/college-auditorium/01-card.webp","gallery":["/projects/college-auditorium/01.webp"]},
+  "tagore-centenary-auditorium-a-c-at-calicut": {"hero":"/projects/tagore-centenary-auditorium-a-c-at-calicut/01.webp","card":"/projects/tagore-centenary-auditorium-a-c-at-calicut/01-card.webp","gallery":["/projects/tagore-centenary-auditorium-a-c-at-calicut/01.webp"]},
+  "igs-convention-centre": {"hero":"/projects/igs-convention-centre/01.webp","card":"/projects/igs-convention-centre/01-card.webp","gallery":["/projects/igs-convention-centre/01.webp","/projects/igs-convention-centre/02.webp"]},
+  "leela-raviz-convention-centre": {"hero":"/projects/leela-raviz-convention-centre/01.webp","card":"/projects/leela-raviz-convention-centre/01-card.webp","gallery":["/projects/leela-raviz-convention-centre/01.webp"]},
   "110-kv-substation-technopark": {"hero":"/projects/110-kv-substation-technopark/01.webp","card":"/projects/110-kv-substation-technopark/01-card.webp","gallery":["/projects/110-kv-substation-technopark/01.webp","/projects/110-kv-substation-technopark/02.webp","/projects/110-kv-substation-technopark/03.webp"]},
   "accel-infinium-it-park": {"hero":"/projects/accel-infinium-it-park/01.webp","card":"/projects/accel-infinium-it-park/01-card.webp","gallery":["/projects/accel-infinium-it-park/01.webp"]},
   "adtech-kanjirampara": {"hero":"/projects/adtech-kanjirampara/01.webp","card":"/projects/adtech-kanjirampara/01-card.webp","gallery":["/projects/adtech-kanjirampara/01.webp","/projects/adtech-kanjirampara/02.webp","/projects/adtech-kanjirampara/03.webp"]},
