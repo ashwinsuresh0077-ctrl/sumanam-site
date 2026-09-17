@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Layers, Leaf, Clock, MapPin } from 'lucide-react'
 import { AnimatedText } from '../lib/motion'
+import { asset } from '../lib/asset.js'
 
 const points = [
   {
@@ -160,7 +161,7 @@ export default function About() {
                   nothing moves until the visitor asks for it. */}
               <motion.video
                 ref={videoRef}
-                src="/mep-bim-pmc.mp4"
+                src={asset('/mep-bim-pmc.mp4')}
                 aria-label="MEP, BIM and project management work in a completed commercial interior"
                 autoPlay={!reduce}
                 loop

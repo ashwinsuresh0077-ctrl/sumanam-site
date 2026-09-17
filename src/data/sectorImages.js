@@ -18,3 +18,9 @@ export const sectorImages = {
   "hospitals": [{"src":"/projects/annai-hospital-tiruchengode/01.webp","title":"Annai Hospital"},{"src":"/projects/annai-hospital-tiruchengode/02.webp","title":"Annai Hospital"},{"src":"/projects/annai-hospital-tiruchengode/03.webp","title":"Annai Hospital"},{"src":"/projects/balusseri-taluk-hospital/01.webp","title":"Balusseri Taluk Hospital"},{"src":"/projects/balusseri-taluk-hospital/02.webp","title":"Balusseri Taluk Hospital"},{"src":"/projects/balusseri-taluk-hospital/03.webp","title":"Balusseri Taluk Hospital"},{"src":"/projects/sunrise-hospital-cochin/01.webp","title":"Sunrise Hospital"},{"src":"/projects/sunrise-hospital-cochin/02.webp","title":"Sunrise Hospital"},{"src":"/projects/sunrise-hospital-cochin/03.webp","title":"Sunrise Hospital"},{"src":"/projects/siva-hospital-nagarcoil/01.webp","title":"Siva Hospital"},{"src":"/projects/siva-hospital-nagarcoil/02.webp","title":"Siva Hospital"},{"src":"/projects/siva-hospital-nagarcoil/03.webp","title":"Siva Hospital"}],
 }
 
+
+// Rewrite every image path for the deployment base (root or /sumanam-site/).
+import { asset } from '../lib/asset.js'
+for (const k in sectorImages) {
+  sectorImages[k] = sectorImages[k].map((o) => ({ ...o, src: asset(o.src) }))
+}

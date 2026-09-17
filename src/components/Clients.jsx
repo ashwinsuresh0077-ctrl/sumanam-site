@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { asset } from '../lib/asset.js'
 
 // Client logos live in public/clients/. `name` is the accessible label only:
 // the wall shows marks, never printed brand names.
@@ -91,7 +92,7 @@ export default function Clients() {
               aria-hidden={i >= clients.length || undefined}
             >
               <img
-                src={`/clients/${c.file}`}
+                src={asset(`/clients/${c.file}`)}
                 alt={i >= clients.length ? '' : c.name}
                 loading="lazy"
                 width="112"

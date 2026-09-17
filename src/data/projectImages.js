@@ -53,4 +53,13 @@ export const projectImages = {
   "yamuna-restaurant-mount-road": {"hero":"/projects/yamuna-restaurant-mount-road/01.webp","card":"/projects/yamuna-restaurant-mount-road/01-card.webp","gallery":["/projects/yamuna-restaurant-mount-road/01.webp","/projects/yamuna-restaurant-mount-road/02.webp"]},
 }
 
+// Rewrite every image path for the deployment base (root or /sumanam-site/).
+import { asset } from '../lib/asset.js'
+for (const k in projectImages) {
+  const e = projectImages[k]
+  e.hero = asset(e.hero)
+  e.card = asset(e.card)
+  e.gallery = e.gallery.map(asset)
+}
+
 export const getImages = (slug) => projectImages[slug] || null
