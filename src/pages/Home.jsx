@@ -8,6 +8,7 @@ import Work from '../components/Work'
 import Projects from '../components/Projects'
 import CTABand from '../components/CTABand'
 import Contact from '../components/Contact'
+import VideoBand from '../components/VideoBand'
 import Footer from '../components/Footer'
 
 export default function Home() {
@@ -24,6 +25,7 @@ export default function Home() {
       <Projects />
       <CTABand />
       <Contact />
+      <VideoBand />
       <Footer />
     </div>
   )
