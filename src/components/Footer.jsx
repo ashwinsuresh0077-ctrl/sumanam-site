@@ -93,7 +93,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="text-ink/70 shrink-0 mt-0.5" size={16} strokeWidth={1.5} />
-                <span>Thoraipakkam, Chennai, Tamil Nadu</span>
+                <span>No.256, Second Floor, Continental Plaza, Anna Salai, Thousand Light, Chennai 600 006, Tamil Nadu</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="text-ink/70 shrink-0" size={16} strokeWidth={1.5} />
