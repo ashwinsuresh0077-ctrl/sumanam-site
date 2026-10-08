@@ -1,48 +1,109 @@
 import { motion } from 'framer-motion'
 import { MapPin } from 'lucide-react'
-import { asset } from '../lib/asset.js'
 
-// The four offices as a checkerboard of photo + address panels — the same
-// pinwheel the production site uses: photos on the left in the top row and on
-// the right in the bottom row, light and dark cells alternating.
+// The four offices as a checkerboard of tile + address panels — the same
+// pinwheel the production site uses: tiles on the left in the top row and on
+// the right in the bottom row, light and dark cells alternating. The tiles are
+// original generated artwork (blueprint grid + skyline + pin), not photos, so
+// there is no stock-image licensing to worry about.
 const OFFICES = [
   {
     city: 'TRIVANDRUM',
+    coords: '8.52°N  76.94°E',
     phone: '+91 9745180055',
     tel: '+919745180055',
     address: ['Aditya Apartment, SH 2, Kowdiar,', 'Thiruvananthapuram, Kerala 695003'],
-    photo: '/contact/trivandrum.png',
     photoSide: 'left',
     variant: 'light',
   },
   {
     city: 'COCHIN',
+    coords: '9.93°N  76.27°E',
     phone: '+91 97 45 92 0555',
     tel: '+919745920555',
     address: ['1-A,', 'Bluemoon Pearl-II, Ambelipadam', 'Road, Vyttila,', 'Cochin 682 019,', 'India'],
-    photo: '/contact/cochin.png',
     photoSide: 'left',
     variant: 'dark',
   },
   {
     city: 'BANGALORE',
+    coords: '12.97°N  77.59°E',
     phone: '+91 9846020055',
     tel: '+919846020055',
     address: ['1st Floor, Commercial Point, # 23,', 'Dispensary Road, Parallel to Commercial', 'Street, Bangalore 560 001, India'],
-    photo: '/contact/bangalore.png',
     photoSide: 'right',
     variant: 'dark',
   },
   {
     city: 'CHENNAI',
+    coords: '13.08°N  80.27°E',
     phone: '+91 98 84 520055',
     tel: '+919884520055',
     address: ['No.256, Second Floor, Continental', 'Plaza, Anna Salai, Thousand Light, Chennai', '600 006, India'],
-    photo: '/contact/chennai.png',
     photoSide: 'right',
     variant: 'light',
   },
 ]
+
+// A dark gradient per cell, varied so the four tiles don't read identically.
+const TILE_GRADIENTS = [
+  'radial-gradient(120% 120% at 25% 22%, #4f46e5 0%, #1e1b4b 55%, #0b0d12 100%)',
+  'radial-gradient(120% 120% at 72% 24%, #6d28d9 0%, #211749 55%, #0b0d12 100%)',
+  'radial-gradient(120% 120% at 28% 78%, #1e3a8a 0%, #172554 55%, #0b0d12 100%)',
+  'radial-gradient(120% 120% at 70% 76%, #3730a3 0%, #1e1b4b 55%, #0b0d12 100%)',
+]
+
+// An original, generated location tile: blueprint grid, an abstract skyline
+// (deterministic per city, no photography) and a pin with the real coordinates.
+function CityTile({ index, name, coords }) {
+  const bars = Array.from({ length: 16 }, (_, i) => {
+    const h = 0.28 + 0.4 * Math.abs(Math.sin((i + index * 2.3) * 1.27))
+    return h
+  })
+  return (
+    <div className="absolute inset-0" style={{ background: TILE_GRADIENTS[index % 4] }}>
+      {/* blueprint grid */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
+        aria-hidden="true"
+      />
+      {/* abstract skyline */}
+      <svg
+        viewBox="0 0 480 300"
+        preserveAspectRatio="xMidYMax slice"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden="true"
+      >
+        {bars.map((h, i) => (
+          <rect
+            key={i}
+            x={i * 30 + 2}
+            y={300 - h * 190}
+            width={26}
+            height={h * 190}
+            fill="rgba(255,255,255,0.05)"
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth="1"
+          />
+        ))}
+      </svg>
+      {/* pin + coordinates */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+        <div className="relative flex items-center justify-center">
+          <span className="absolute h-24 w-24 rounded-full border border-white/15" />
+          <MapPin size={44} strokeWidth={1.25} className="relative text-white drop-shadow" />
+        </div>
+        <span className="text-[11px] font-medium tracking-[0.3em] text-white/55">{coords}</span>
+        <span className="text-xs font-semibold tracking-[0.35em] text-white/35">{name}</span>
+      </div>
+    </div>
+  )
+}
 
 const SOCIALS = [
   {
@@ -98,16 +159,11 @@ function Office({ office }) {
 
   const photo = (
     <div
-      className={`relative h-56 w-full order-1 sm:h-64 lg:h-auto lg:w-1/2 ${
+      className={`relative h-56 w-full overflow-hidden order-1 sm:h-64 lg:h-auto lg:w-1/2 ${
         photoLeft ? 'lg:order-1' : 'lg:order-2'
       }`}
     >
-      <img
-        src={asset(office.photo)}
-        alt={`${office.city} — Sumanam office`}
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
+      <CityTile index={office.index} name={office.city} coords={office.coords} />
     </div>
   )
 
@@ -180,8 +236,8 @@ export default function Contact() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2">
-        {OFFICES.map((o) => (
-          <Office key={o.city} office={o} />
+        {OFFICES.map((o, i) => (
+          <Office key={o.city} office={{ ...o, index: i }} />
         ))}
         <Invite />
       </div>
