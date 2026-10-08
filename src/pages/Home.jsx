@@ -23,9 +23,9 @@ export default function Home() {
       <About />
       <Work />
       <Projects />
+      <VideoBand />
       <CTABand />
       <Contact />
-      <VideoBand />
       <Footer />
     </div>
   )
