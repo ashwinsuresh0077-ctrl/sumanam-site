@@ -4,9 +4,12 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Served from the GitHub Pages project URL (ashwinsuresh0077-ctrl.github.io/
-  // sumanam-site/). When a custom domain (e.g. sumanam.co.in) is pointed at it,
-  // the site serves from root — set base to '/' and redeploy.
-  base: '/sumanam-site/',
+  // Base path depends on where it's served:
+  //   - Vercel / a custom domain (root)      → '/'  (the default)
+  //   - GitHub Pages project URL (subpath)   → '/sumanam-site/'
+  // The GitHub Actions workflow sets VITE_BASE=/sumanam-site/ for that build;
+  // Vercel builds with no env, so they get root. The asset() helper and the
+  // router basename both read import.meta.env.BASE_URL, so either just works.
+  base: process.env.VITE_BASE || '/',
   plugins: [react(), tailwindcss()],
 })
