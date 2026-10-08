@@ -1,196 +1,188 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, Check, AlertCircle } from 'lucide-react'
-import { TextReveal, Stagger, StaggerItem } from '../lib/motion'
+import { asset } from '../lib/asset.js'
 
-const EMAIL = 'info@sumanam.co.in'
-
-const FIELDS = [
-  { name: 'name', label: 'Your name', type: 'text', autoComplete: 'name', half: true },
-  { name: 'email', label: 'Email address', type: 'email', autoComplete: 'email', half: true },
-  { name: 'subject', label: 'Subject', type: 'text', autoComplete: 'off' },
+// The four offices as a checkerboard of photo + address panels — the same
+// pinwheel the production site uses: photos on the left in the top row and on
+// the right in the bottom row, light and dark cells alternating.
+const OFFICES = [
+  {
+    city: 'TRIVANDRUM',
+    phone: '+91 9745180055',
+    tel: '+919745180055',
+    address: ['Aditya Apartment, SH 2, Kowdiar,', 'Thiruvananthapuram, Kerala 695003'],
+    photo: '/contact/trivandrum.png',
+    photoSide: 'left',
+    variant: 'light',
+  },
+  {
+    city: 'COCHIN',
+    phone: '+91 97 45 92 0555',
+    tel: '+919745920555',
+    address: ['1-A,', 'Bluemoon Pearl-II, Ambelipadam', 'Road, Vyttila,', 'Cochin 682 019,', 'India'],
+    photo: '/contact/cochin.png',
+    photoSide: 'left',
+    variant: 'dark',
+  },
+  {
+    city: 'BANGALORE',
+    phone: '+91 9846020055',
+    tel: '+919846020055',
+    address: ['1st Floor, Commercial Point, # 23,', 'Dispensary Road, Parallel to Commercial', 'Street, Bangalore 560 001, India'],
+    photo: '/contact/bangalore.png',
+    photoSide: 'right',
+    variant: 'dark',
+  },
+  {
+    city: 'CHENNAI',
+    phone: '+91 98 84 520055',
+    tel: '+919884520055',
+    address: ['No.256, Second Floor, Continental', 'Plaza, Anna Salai, Thousand Light, Chennai', '600 006, India'],
+    photo: '/contact/chennai.png',
+    photoSide: 'right',
+    variant: 'light',
+  },
 ]
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const SOCIALS = [
+  {
+    label: 'Facebook',
+    href: '#',
+    path: 'M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.25-1.5 1.55-1.5H17V4.6c-.3 0-1.3-.1-2.45-.1-2.42 0-4.05 1.47-4.05 4.18v2.21H7.7V14h2.8v8h3z',
+  },
+  {
+    label: 'X',
+    href: '#',
+    path: 'M17.2 3h2.9l-6.35 7.26L21.5 21h-5.86l-4.6-6-5.25 6H2.9l6.8-7.77L2.6 3h6l4.15 5.49L17.2 3Zm-1.02 16.2h1.6L7.9 4.72H6.18l10 14.48Z',
+  },
+  {
+    label: 'LinkedIn',
+    href: '#',
+    path: 'M6.94 8.5H4.07V20H6.94V8.5ZM5.5 4a1.67 1.67 0 1 0 0 3.34A1.67 1.67 0 0 0 5.5 4ZM20 13.37c0-2.9-1.55-4.25-3.62-4.25-1.67 0-2.42.92-2.84 1.56V8.5H10.7V20h2.84v-6.09c0-.32.02-.64.12-.87.26-.64.84-1.3 1.82-1.3 1.29 0 1.8 1 1.8 2.44V20H20v-6.63Z',
+  },
+]
 
-const inputClass =
-  'w-full bg-ink/[0.04] rounded-lg border px-5 py-4 text-ink placeholder-ink/40 focus:outline-none transition-colors'
-
-export default function Contact() {
-  const [values, setValues] = useState({ name: '', email: '', subject: '', message: '' })
-  const [errors, setErrors] = useState({})
-  const [sent, setSent] = useState(false)
-
-  const set = (name) => (e) => {
-    setValues((v) => ({ ...v, [name]: e.target.value }))
-    setErrors((x) => (x[name] ? { ...x, [name]: undefined } : x))
-    setSent(false)
-  }
-
-  const validate = () => {
-    const e = {}
-    if (!values.name.trim()) e.name = 'Please enter your name.'
-    if (!values.email.trim()) e.email = 'Please enter your email address.'
-    else if (!EMAIL_RE.test(values.email.trim())) e.email = 'That does not look like a valid email address.'
-    if (!values.message.trim()) e.message = 'Please tell us a little about your project.'
-    return e
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const found = validate()
-    setErrors(found)
-    if (Object.keys(found).length) {
-      // Focus the first field with a problem so keyboard users aren't stranded.
-      document.getElementById(`contact-${Object.keys(found)[0]}`)?.focus()
-      return
-    }
-
-    // No backend on this site, so hand the enquiry to the visitor's mail client
-    // pre-filled. A lead is never silently swallowed by a dead form.
-    const subject = values.subject.trim() || `Project enquiry from ${values.name.trim()}`
-    const body = [
-      `Name: ${values.name.trim()}`,
-      `Email: ${values.email.trim()}`,
-      '',
-      values.message.trim(),
-    ].join('\n')
-    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-    setSent(true)
-  }
-
+function Social({ variant }) {
+  const base =
+    variant === 'dark'
+      ? 'text-white/70 hover:text-white'
+      : 'text-slate-600 hover:text-slate-900'
   return (
-    <section id="contact" className="relative py-28 px-6 bg-bg">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+    <div className="flex items-center gap-4">
+      {SOCIALS.map((s) => (
+        <a
+          key={s.label}
+          href={s.href}
+          aria-label={s.label}
+          className={`transition-colors ${base}`}
         >
-          <p className="eyebrow text-sm mb-3">Let&apos;s Build Together</p>
-          <TextReveal
-            as="h2"
-            className="text-3xl md:text-5xl font-semibold text-ink mb-6"
-            text="Got an Idea? We'd Love to Chat."
-          />
-          <p className="text-ink/65 leading-relaxed max-w-md mb-10">
-            Ensuring sustainable growth of our company and positively contributing
-            to the success of our clients&apos; organizations.
-          </p>
-
-          <Stagger className="space-y-5" stagger={0.1}>
-            {[
-              { Icon: Mail, text: EMAIL, href: `mailto:${EMAIL}` },
-              { Icon: Phone, text: '+91 98461 50055', href: 'tel:+919846150055' },
-              { Icon: MapPin, text: 'Aditya Apartment, SH, Kowdiar, Thiruvananthapuram, Kerala 695003' },
-            ].map(({ Icon, text, href }) => (
-              <StaggerItem key={text} className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-xl bg-ink/[0.05] border border-ink/10 flex items-center justify-center shrink-0">
-                  <Icon className="text-ink/70" size={18} strokeWidth={1.5} />
-                </div>
-                {href ? (
-                  <a href={href} className="text-ink/75 hover:text-ink transition-colors py-2">
-                    {text}
-                  </a>
-                ) : (
-                  <span className="text-ink/75">{text}</span>
-                )}
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </motion.div>
-
-        <motion.form
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.15 }}
-          className="space-y-5"
-          onSubmit={handleSubmit}
-          noValidate
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {FIELDS.filter((f) => f.half).map((f) => (
-              <Field key={f.name} field={f} value={values[f.name]} error={errors[f.name]} onChange={set(f.name)} />
-            ))}
-          </div>
-
-          {FIELDS.filter((f) => !f.half).map((f) => (
-            <Field key={f.name} field={f} value={values[f.name]} error={errors[f.name]} onChange={set(f.name)} optional />
-          ))}
-
-          <div>
-            <label htmlFor="contact-message" className="block text-sm text-ink/70 mb-2">
-              Tell us about your project <span className="text-ink/50">*</span>
-            </label>
-            <textarea
-              id="contact-message"
-              name="message"
-              rows={5}
-              value={values.message}
-              onChange={set('message')}
-              aria-required="true"
-              aria-invalid={errors.message ? 'true' : undefined}
-              aria-describedby={errors.message ? 'contact-message-error' : undefined}
-              className={`${inputClass} resize-none ${errors.message ? 'border-red-500' : 'border-ink/15 focus:border-ink/50'}`}
-            />
-            {errors.message && <FieldError id="contact-message-error">{errors.message}</FieldError>}
-          </div>
-
-          <button
-            type="submit"
-            className="btn-primary text-sm uppercase tracking-widest w-full sm:w-auto justify-center"
-          >
-            Send Message
-          </button>
-
-          {sent && (
-            <p role="status" className="flex items-start gap-2 text-sm text-ink/75">
-              <Check size={16} className="text-ink/70 mt-0.5 shrink-0" />
-              Your email app should have opened with the message ready to send. If nothing
-              happened, email us directly at{' '}
-              <a href={`mailto:${EMAIL}`} className="text-ink font-medium underline">
-                {EMAIL}
-              </a>
-              .
-            </p>
-          )}
-        </motion.form>
-      </div>
-    </section>
-  )
-}
-
-function Field({ field, value, error, onChange, optional }) {
-  const id = `contact-${field.name}`
-  return (
-    <div>
-      <label htmlFor={id} className="block text-sm text-ink/70 mb-2">
-        {field.label} {!optional && <span className="text-ink/50">*</span>}
-      </label>
-      <input
-        id={id}
-        name={field.name}
-        type={field.type}
-        value={value}
-        onChange={onChange}
-        autoComplete={field.autoComplete}
-        aria-required={optional ? undefined : 'true'}
-        aria-invalid={error ? 'true' : undefined}
-        aria-describedby={error ? `${id}-error` : undefined}
-        className={`${inputClass} ${error ? 'border-red-500' : 'border-ink/15 focus:border-ink/50'}`}
-      />
-      {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+            <path d={s.path} />
+          </svg>
+        </a>
+      ))}
     </div>
   )
 }
 
-function FieldError({ id, children }) {
+function Office({ office }) {
+  const photoLeft = office.photoSide === 'left'
+  const dark = office.variant === 'dark'
+
+  const panelBg = dark ? 'bg-[#0b0d12]' : 'bg-white'
+  const cityClr = dark ? 'text-white' : 'text-[#0b1b34]'
+  const phoneClr = dark ? 'text-white' : 'text-[#0b1b34]'
+  const addrClr = dark ? 'text-white/55' : 'text-slate-500'
+  // On desktop the top row reads left→right, the bottom row right→left.
+  const align = photoLeft ? 'lg:items-start lg:text-left' : 'lg:items-end lg:text-right'
+
+  const photo = (
+    <div
+      className={`relative h-56 w-full order-1 sm:h-64 lg:h-auto lg:w-1/2 ${
+        photoLeft ? 'lg:order-1' : 'lg:order-2'
+      }`}
+    >
+      <img
+        src={asset(office.photo)}
+        alt={`${office.city} — Sumanam office`}
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+    </div>
+  )
+
+  const text = (
+    <div
+      className={`relative flex w-full flex-col items-start gap-5 px-8 py-12 order-2 sm:px-12 lg:w-1/2 lg:justify-center ${
+        photoLeft ? 'lg:order-2' : 'lg:order-1'
+      } ${panelBg} ${align}`}
+    >
+      {/* A solid notch the colour of the panel, poking into the photo at the
+          seam — the pinwheel accent from the production layout. */}
+      <span
+        className={`pointer-events-none absolute top-1/2 hidden -translate-y-1/2 lg:block ${
+          photoLeft ? '-left-[18px]' : '-right-[18px]'
+        }`}
+        style={{
+          width: 0,
+          height: 0,
+          borderTop: '22px solid transparent',
+          borderBottom: '22px solid transparent',
+          ...(photoLeft
+            ? { borderRight: `18px solid ${dark ? '#0b0d12' : '#ffffff'}` }
+            : { borderLeft: `18px solid ${dark ? '#0b0d12' : '#ffffff'}` }),
+        }}
+        aria-hidden="true"
+      />
+
+      <h3 className={`text-2xl font-bold tracking-wide sm:text-3xl ${cityClr}`}>{office.city}</h3>
+      <a href={`tel:${office.tel}`} className={`text-lg ${phoneClr} hover:underline`}>
+        {office.phone}
+      </a>
+      <address className={`not-italic text-base leading-relaxed ${addrClr}`}>
+        {office.address.map((line) => (
+          <span key={line} className="block">
+            {line}
+          </span>
+        ))}
+      </address>
+      <Social variant={office.variant} />
+    </div>
+  )
+
   return (
-    <p id={id} className="mt-2 flex items-center gap-1.5 text-sm text-red-500">
-      <AlertCircle size={14} className="shrink-0" />
-      {children}
-    </p>
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: 0.6 }}
+      className="flex flex-col lg:flex-row"
+    >
+      {photo}
+      {text}
+    </motion.div>
+  )
+}
+
+export default function Contact() {
+  return (
+    <section id="contact" className="relative bg-bg">
+      <div className="mx-auto max-w-3xl px-6 pt-24 pb-14 text-center">
+        <p className="eyebrow text-sm mb-3">Contact Us</p>
+        <h2 className="text-3xl font-semibold text-ink md:text-5xl">Reach us across India</h2>
+        <p className="mx-auto mt-5 max-w-xl leading-relaxed text-ink/60">
+          Four offices, one team. Call the location nearest you, or write to us at{' '}
+          <a href="mailto:info@sumanam.co.in" className="text-ink underline">
+            info@sumanam.co.in
+          </a>
+          .
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2">
+        {OFFICES.map((o) => (
+          <Office key={o.city} office={o} />
+        ))}
+      </div>
+    </section>
   )
 }
