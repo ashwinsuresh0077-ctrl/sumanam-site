@@ -1,14 +1,15 @@
 import { motion } from 'framer-motion'
 import { MapPin } from 'lucide-react'
+import { asset } from '../lib/asset.js'
 
-// The four offices as a checkerboard of tile + address panels — the same
-// pinwheel the production site uses: tiles on the left in the top row and on
-// the right in the bottom row, light and dark cells alternating. The tiles are
-// original generated artwork (blueprint grid + skyline + pin), not photos, so
-// there is no stock-image licensing to worry about.
+// The four offices as a checkerboard of photo + address panels — the same
+// pinwheel the production site uses: photos on the left in the top row and on
+// the right in the bottom row, light and dark cells alternating. Each photo is
+// an office interior/exterior with the location pin and coordinates overlaid.
 const OFFICES = [
   {
     city: 'TRIVANDRUM',
+    photo: '/office/building.webp',
     coords: '8.52°N  76.94°E',
     phone: '+91 9745180055',
     tel: '+919745180055',
@@ -18,6 +19,7 @@ const OFFICES = [
   },
   {
     city: 'COCHIN',
+    photo: '/office/reception.webp',
     coords: '9.93°N  76.27°E',
     phone: '+91 97 45 92 0555',
     tel: '+919745920555',
@@ -27,6 +29,7 @@ const OFFICES = [
   },
   {
     city: 'BANGALORE',
+    photo: '/office/open-office.webp',
     coords: '12.97°N  77.59°E',
     phone: '+91 9846020055',
     tel: '+919846020055',
@@ -36,6 +39,7 @@ const OFFICES = [
   },
   {
     city: 'CHENNAI',
+    photo: '/office/boardroom.webp',
     coords: '13.08°N  80.27°E',
     phone: '+91 98 84 520055',
     tel: '+919884520055',
@@ -45,61 +49,34 @@ const OFFICES = [
   },
 ]
 
-// A dark gradient per cell, varied so the four tiles don't read identically.
-const TILE_GRADIENTS = [
-  'radial-gradient(120% 120% at 25% 22%, #4f46e5 0%, #1e1b4b 55%, #0b0d12 100%)',
-  'radial-gradient(120% 120% at 72% 24%, #6d28d9 0%, #211749 55%, #0b0d12 100%)',
-  'radial-gradient(120% 120% at 28% 78%, #1e3a8a 0%, #172554 55%, #0b0d12 100%)',
-  'radial-gradient(120% 120% at 70% 76%, #3730a3 0%, #1e1b4b 55%, #0b0d12 100%)',
-]
-
-// An original, generated location tile: blueprint grid, an abstract skyline
-// (deterministic per city, no photography) and a pin with the real coordinates.
-function CityTile({ index, name, coords }) {
-  const bars = Array.from({ length: 16 }, (_, i) => {
-    const h = 0.28 + 0.4 * Math.abs(Math.sin((i + index * 2.3) * 1.27))
-    return h
-  })
+// A real office photograph with a dark scrim, so the location pin, coordinates
+// and city name stay legible on top of the image.
+function CityTile({ photo, name, coords }) {
   return (
-    <div className="absolute inset-0" style={{ background: TILE_GRADIENTS[index % 4] }}>
-      {/* blueprint grid */}
+    <div className="absolute inset-0 bg-[#0b0d12]">
+      <img
+        src={asset(photo)}
+        alt={`${name} office`}
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      {/* scrim: darker toward the bottom where the labels sit */}
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
+          background:
+            'linear-gradient(180deg, rgba(6,9,16,0.25) 0%, rgba(6,9,16,0.42) 55%, rgba(6,9,16,0.72) 100%)',
         }}
         aria-hidden="true"
       />
-      {/* abstract skyline */}
-      <svg
-        viewBox="0 0 480 300"
-        preserveAspectRatio="xMidYMax slice"
-        className="absolute inset-0 h-full w-full"
-        aria-hidden="true"
-      >
-        {bars.map((h, i) => (
-          <rect
-            key={i}
-            x={i * 30 + 2}
-            y={300 - h * 190}
-            width={26}
-            height={h * 190}
-            fill="rgba(255,255,255,0.05)"
-            stroke="rgba(255,255,255,0.12)"
-            strokeWidth="1"
-          />
-        ))}
-      </svg>
       {/* pin + coordinates */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
         <div className="relative flex items-center justify-center">
-          <span className="absolute h-24 w-24 rounded-full border border-white/15" />
-          <MapPin size={44} strokeWidth={1.25} className="relative text-white drop-shadow" />
+          <span className="absolute h-24 w-24 rounded-full border border-white/25" />
+          <MapPin size={44} strokeWidth={1.25} className="relative text-white drop-shadow-lg" />
         </div>
-        <span className="text-[11px] font-medium tracking-[0.3em] text-white/55">{coords}</span>
-        <span className="text-xs font-semibold tracking-[0.35em] text-white/35">{name}</span>
+        <span className="text-[11px] font-medium tracking-[0.3em] text-white/80 drop-shadow">{coords}</span>
+        <span className="text-xs font-semibold tracking-[0.35em] text-white/60 drop-shadow">{name}</span>
       </div>
     </div>
   )
@@ -163,7 +140,7 @@ function Office({ office }) {
         photoLeft ? 'lg:order-1' : 'lg:order-2'
       }`}
     >
-      <CityTile index={office.index} name={office.city} coords={office.coords} />
+      <CityTile photo={office.photo} name={office.city} coords={office.coords} />
     </div>
   )
 
@@ -245,9 +222,9 @@ export default function Contact() {
   )
 }
 
-// A created fifth cell spanning the full width: an original brand graphic (a
-// faint blueprint grid with a glowing location pin) beside a short call to
-// action with the company's real general contact details. No fabricated office.
+// A fifth cell spanning the full width: an office photo with a glowing location
+// pin beside a short call to action with the company's real general contact
+// details. No fabricated office address.
 function Invite() {
   return (
     <motion.div
@@ -257,28 +234,27 @@ function Invite() {
       transition={{ duration: 0.6 }}
       className="flex flex-col lg:col-span-2 lg:flex-row"
     >
-      {/* Graphic side */}
-      <div
-        className="relative order-1 h-56 w-full overflow-hidden sm:h-64 lg:h-auto lg:min-h-[320px] lg:w-1/2"
-        style={{
-          background:
-            'radial-gradient(120% 120% at 28% 22%, #4f46e5 0%, #1e1b4b 52%, #0b0d12 100%)',
-        }}
-      >
+      {/* Photo side */}
+      <div className="relative order-1 h-56 w-full overflow-hidden bg-[#0b0d12] sm:h-64 lg:h-auto lg:min-h-[320px] lg:w-1/2">
+        <img
+          src={asset('/office/lounge.webp')}
+          alt="Sumanam workspace"
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
-            backgroundSize: '42px 42px',
+            background:
+              'linear-gradient(180deg, rgba(6,9,16,0.25) 0%, rgba(6,9,16,0.42) 55%, rgba(6,9,16,0.72) 100%)',
           }}
           aria-hidden="true"
         />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative flex items-center justify-center">
-            <span className="absolute h-40 w-40 rounded-full border border-white/10" />
-            <span className="absolute h-28 w-28 rounded-full border border-white/20" />
-            <MapPin size={60} strokeWidth={1.25} className="relative text-white" />
+            <span className="absolute h-40 w-40 rounded-full border border-white/15" />
+            <span className="absolute h-28 w-28 rounded-full border border-white/25" />
+            <MapPin size={60} strokeWidth={1.25} className="relative text-white drop-shadow-lg" />
           </div>
         </div>
       </div>
