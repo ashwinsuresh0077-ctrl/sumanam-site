@@ -123,20 +123,10 @@ body {
 /* Gradient display heading. Ink at the top falling into the brand blue —
    works in both themes because both stops are theme tokens. */
 .hero-heading {
-  /* On dark, end at the luminous accent (#7aa6ff) so the tall letters stay
-     legible and vibrant instead of fading into a muddy mid-blue near black. */
-  background: linear-gradient(180deg, var(--color-ink) 0%, var(--color-gold-light) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
-/* On the light ground, end at the deeper accent (#4f86f7) for enough contrast. */
-[data-theme='light'] .hero-heading {
-  background: linear-gradient(180deg, var(--color-ink) 0%, var(--color-gold) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
+  /* Solid foreground — white on dark, navy on light. (Was a blue gradient
+     fill; dropped per request so the big headings read as plain white.) */
+  color: var(--color-ink);
+  -webkit-text-fill-color: var(--color-ink);
 }
 
 /* Liquid glass — the navbar bar, the "Explore Now" button and the tag card.
