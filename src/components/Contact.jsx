@@ -216,76 +216,7 @@ export default function Contact() {
         {OFFICES.map((o, i) => (
           <Office key={o.city} office={{ ...o, index: i }} />
         ))}
-        <Invite />
       </div>
     </section>
-  )
-}
-
-// A fifth cell spanning the full width: an office photo with a glowing location
-// pin beside a short call to action with the company's real general contact
-// details. No fabricated office address.
-function Invite() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.6 }}
-      className="flex flex-col lg:col-span-2 lg:flex-row"
-    >
-      {/* Photo side */}
-      <div className="relative order-1 h-56 w-full overflow-hidden bg-[#0b0d12] sm:h-64 lg:h-auto lg:min-h-[320px] lg:w-1/2">
-        <img
-          src={asset('/office/lounge.webp')}
-          alt="Sumanam workspace"
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(180deg, rgba(6,9,16,0.25) 0%, rgba(6,9,16,0.42) 55%, rgba(6,9,16,0.72) 100%)',
-          }}
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative flex items-center justify-center">
-            <span className="absolute h-40 w-40 rounded-full border border-white/15" />
-            <span className="absolute h-28 w-28 rounded-full border border-white/25" />
-            <MapPin size={60} strokeWidth={1.25} className="relative text-white drop-shadow-lg" />
-          </div>
-        </div>
-      </div>
-
-      {/* Text side */}
-      <div className="relative order-2 flex w-full flex-col items-start gap-5 bg-[#0b0d12] px-8 py-12 sm:px-12 lg:w-1/2 lg:justify-center">
-        <span
-          className="pointer-events-none absolute top-1/2 hidden -translate-y-1/2 -left-[18px] lg:block"
-          style={{
-            width: 0,
-            height: 0,
-            borderTop: '22px solid transparent',
-            borderBottom: '22px solid transparent',
-            borderRight: '18px solid #0b0d12',
-          }}
-          aria-hidden="true"
-        />
-        <p className="eyebrow text-xs text-white/60">New enquiries</p>
-        <h3 className="text-2xl font-bold tracking-wide text-white sm:text-3xl">LET&apos;S BUILD</h3>
-        <p className="max-w-sm leading-relaxed text-white/55">
-          Wherever your project sits across Kerala, Tamil Nadu and Karnataka, our
-          team can take it from design to handover. Tell us what you&apos;re planning.
-        </p>
-        <a href="mailto:info@sumanam.co.in" className="text-lg text-white hover:underline">
-          info@sumanam.co.in
-        </a>
-        <a href="tel:+919846150055" className="text-lg text-white hover:underline">
-          +91 98461 50055
-        </a>
-        <Social variant="dark" />
-      </div>
-    </motion.div>
   )
 }
