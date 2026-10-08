@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X, Sun, Moon } from 'lucide-react'
+import { asset } from '../lib/asset.js'
 
 const links = [
   { name: 'Home', href: '/#home' },
@@ -46,11 +47,12 @@ export default function Navbar() {
             : 'bg-bg-alt/60 backdrop-blur-xl py-2.5 shadow-[0_8px_32px_rgba(0,0,0,0.35)]'
         }`}
       >
-        <Link to="/#home" className="flex items-center gap-2.5 shrink-0">
-          <div className="w-8 h-8 border border-gold rotate-45 flex items-center justify-center">
-            <div className="w-3.5 h-3.5 bg-gold -rotate-45" />
-          </div>
-          <span className="text-lg font-semibold tracking-[0.2em] text-ink">SUMANAM</span>
+        <Link to="/#home" className="flex items-center shrink-0">
+          <img
+            src={asset('/sumanam-logo.png')}
+            alt="Sumanam Engineering Services"
+            className="h-8 w-auto"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">

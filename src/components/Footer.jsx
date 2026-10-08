@@ -1,6 +1,7 @@
 import { Mail, Phone, MapPin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { services } from '../data/services'
+import { asset } from '../lib/asset.js'
 
 const socials = [
   {
@@ -31,11 +32,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
           {/* Brand */}
           <div className="space-y-5">
-            <Link to="/#home" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 border border-gold rotate-45 flex items-center justify-center">
-                <div className="w-3.5 h-3.5 bg-gold -rotate-45" />
-              </div>
-              <span className="text-ink font-semibold tracking-[0.2em]">SUMANAM</span>
+            <Link to="/#home" className="flex items-center">
+              <img
+                src={asset('/sumanam-logo.png')}
+                alt="Sumanam Engineering Services"
+                className="h-9 w-auto"
+              />
             </Link>
             <p className="text-ink/65 text-sm leading-relaxed max-w-xs">
               Integrated MEP, BIM and project management consultancy delivering across
