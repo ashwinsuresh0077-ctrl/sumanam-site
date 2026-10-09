@@ -139,7 +139,7 @@ export default function Projects() {
               per-word transforms are mutually exclusive. */}
           <h2
             className="hero-heading font-black uppercase leading-none tracking-tight"
-            style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
+            style={{ fontSize: 'clamp(2.25rem, 8vw, 96px)' }}
           >
             Projects
           </h2>
