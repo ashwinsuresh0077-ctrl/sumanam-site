@@ -51,7 +51,7 @@ export default function Navbar() {
           <img
             src={asset('/sumanam-logo.png')}
             alt="Sumanam Engineering Services"
-            className="h-10 w-auto"
+            className="h-12 w-auto"
           />
         </Link>
 
