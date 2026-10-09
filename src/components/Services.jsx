@@ -122,7 +122,7 @@ export default function Services() {
             as="h2"
             text="Services"
             className="font-black uppercase leading-none tracking-tight text-ink"
-            style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
+            style={{ fontSize: 'clamp(2.25rem, 8vw, 96px)' }}
           />
         </Reveal>
 
