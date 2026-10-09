@@ -126,7 +126,7 @@ export default function About() {
               surrounding motion.div still fades the block in. */}
           <h2
             className="hero-heading font-black uppercase leading-none tracking-tight"
-            style={{ fontSize: 'clamp(2.25rem, 7vw, 5.5rem)' }}
+            style={{ fontSize: 'clamp(1.75rem, 5vw, 3.75rem)' }}
           >
             Engineering partners, not just consultants
           </h2>
