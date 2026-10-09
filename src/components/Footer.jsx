@@ -36,7 +36,7 @@ export default function Footer() {
               <img
                 src={asset('/sumanam-logo.png')}
                 alt="Sumanam Engineering Services"
-                className="h-9 w-auto"
+                className="h-11 w-auto"
               />
             </Link>
             <p className="text-ink/65 text-sm leading-relaxed max-w-xs">
