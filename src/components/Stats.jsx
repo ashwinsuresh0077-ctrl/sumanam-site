@@ -10,15 +10,11 @@ const TopoField = lazy(() =>
 )
 import { workCategories } from '../data/work'
 
-// Derived from data/work.js so these headline numbers can never drift out of
-// sync with the project tables the visitor sees two sections further down.
-// Rounded DOWN to a clean figure so the claim is always conservative.
+// Trusted Clients and Sectors are derived from data/work.js so they can't drift
+// out of sync with the tables the visitor sees below. Rounded DOWN so the claim
+// stays conservative. Projects Delivered is the company's stated lifetime total
+// (more than the subset tabled on the site), so it is set explicitly below.
 const floorTo = (n, step) => Math.floor(n / step) * step
-
-const projectCount = workCategories.reduce(
-  (total, c) => total + c.sections.reduce((n, s) => n + s.rows.length, 0),
-  0,
-)
 
 const clientCount = new Set(
   workCategories.flatMap((c) =>
@@ -27,7 +23,7 @@ const clientCount = new Set(
 ).size - 1 // drop the empty-string bucket from rows with no client listed
 
 const stats = [
-  { value: floorTo(projectCount, 10), suffix: '+', label: 'Projects Delivered' },
+  { value: 1100, suffix: '+', label: 'Projects Delivered' },
   { value: 30, suffix: '+', label: 'Years of Experience' },
   { value: floorTo(clientCount, 50), suffix: '+', label: 'Trusted Clients' },
   { value: workCategories.length, suffix: '', label: 'Sectors Served' },
