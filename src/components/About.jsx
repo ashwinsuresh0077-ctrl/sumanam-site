@@ -22,8 +22,8 @@ const points = [
   },
   {
     icon: MapPin,
-    title: 'Two Offices, One Team',
-    desc: 'Thiruvananthapuram and Chennai, delivering across Kerala and Tamil Nadu.',
+    title: 'Four Offices, One Team',
+    desc: 'Thiruvananthapuram, Cochin, Bangalore and Chennai, delivering across Kerala, Tamil Nadu and Karnataka.',
   },
 ]
 
@@ -135,7 +135,7 @@ export default function About() {
           <AnimatedText
             className="mt-8 max-w-2xl font-medium leading-relaxed text-ink"
             style={{ fontSize: 'clamp(1rem, 2vw, 1.35rem)' }}
-            text="For over a decade we have designed the systems behind residential, commercial, hospitality and institutional buildings across Kerala and Tamil Nadu. Mechanical, electrical, plumbing and modelling sit under one roof, so coordination happens before site, not on it."
+            text="For over three decades we have designed the systems behind residential, commercial, hospitality and institutional buildings across Kerala, Tamil Nadu and Karnataka. Mechanical, electrical, plumbing and modelling sit under one roof, so coordination happens before site, not on it."
           />
         </motion.div>
 
